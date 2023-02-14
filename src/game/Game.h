@@ -13,6 +13,8 @@ private:
 	int m_windowWidth;
 	int m_windowHeight;
 
+	int m_previousFrameTime;
+
 	void Setup();
 	void ProcessInputs();
 	void Update();

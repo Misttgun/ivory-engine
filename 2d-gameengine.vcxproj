@@ -138,11 +138,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\game\Game.cpp" />
+    <ClCompile Include="src\helpers\Logger.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\helpers\Constants.h" />
+    <ClInclude Include="src\game\Game.h" />
+    <ClInclude Include="src\helpers\Logger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

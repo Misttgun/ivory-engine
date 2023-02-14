@@ -1,9 +1,14 @@
 #include "Game.h"
+#include "../helpers/Constants.h"
+#include "../helpers/Logger.h"
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_windowWidth(0), m_windowHeight(0)
+Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_windowWidth(0), m_windowHeight(0), m_previousFrameTime(0)
 {
+	Logger::Log("Game constructor called!");
+	Logger::LogWarning("Game constructor called!");
+	Logger::LogError("Game constructor called!");
 }
 
 Game::~Game()
@@ -36,6 +41,15 @@ void Game::ProcessInputs()
 
 void Game::Update()
 {
+	auto currentFrameTime = SDL_GetTicks();
+	int timeToWait = TIME_PER_FRAME - (currentFrameTime - m_previousFrameTime);
+
+	if(timeToWait > 0 && timeToWait <= TIME_PER_FRAME)
+		SDL_Delay(timeToWait);
+	
+	float deltaTime = (currentFrameTime - m_previousFrameTime) / 1000.0f;
+
+	m_previousFrameTime = currentFrameTime;
 }
 
 void Game::Render()
@@ -59,7 +73,7 @@ void Game::Init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		std::cerr << "Error initialiazing SDL." << std::endl;
+		Logger::LogError("Error initialiazing SDL.");
 		return;
 	}
 
@@ -71,14 +85,14 @@ void Game::Init()
 	m_window = SDL_CreateWindow(nullptr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_windowWidth, m_windowHeight, SDL_WINDOW_BORDERLESS);
 	if (!m_window)
 	{
-		std::cerr << "Error creating SDL window." << std::endl;
+		Logger::LogError("Error creating SDL window.");
 		return;
 	}
 
 	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
 	if (!m_renderer)
 	{
-		std::cerr << "Error creating SDL renderer." << std::endl;
+		Logger::LogError("Error creating SDL renderer.");
 		return;
 	}
 
