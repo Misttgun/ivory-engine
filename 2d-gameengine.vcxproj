@@ -138,14 +138,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\Component.cpp" />
+    <ClCompile Include="src\ecs\Entity.cpp" />
+    <ClCompile Include="src\ecs\Registry.cpp" />
     <ClCompile Include="src\game\Game.cpp" />
     <ClCompile Include="src\helpers\Logger.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\ecs\System.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ecs\Component.h" />
+    <ClInclude Include="src\ecs\Entity.h" />
+    <ClInclude Include="src\ecs\Registry.h" />
+    <ClInclude Include="src\components\TransformComponent.h" />
     <ClInclude Include="src\helpers\Constants.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\helpers\Logger.h" />
+    <ClInclude Include="src\systems\MovementSystem.h" />
+    <ClInclude Include="src\ecs\System.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
