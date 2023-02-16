@@ -14,14 +14,14 @@ void Logger::Log(const std::string& message)
 	m_logMessages.push_back(LogEntry(LOG_INFO, output));
 }
 
-void Logger::LogWarning(const std::string & message)
+void Logger::LogWarning(const std::string& message)
 {
 	const std::string output = "WRN: [" + GetCurrentDateTimeToString() + "]: " + message;
 	std::cout << "\x1B[93m" << output << "\033[0m" << std::endl;
 	m_logMessages.push_back(LogEntry(LOG_WARNING, output));
 }
 
-void Logger::LogError(const std::string & message)
+void Logger::LogError(const std::string& message)
 {
 	const std::string output = "ERR: [" + GetCurrentDateTimeToString() + "]: " + message;
 	std::cout << "\x1B[91m" << output << "\033[0m" << std::endl;
@@ -32,6 +32,11 @@ std::string Logger::GetCurrentDateTimeToString()
 {
 	const std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	std::string output(30, '\0');
-	std::strftime(output.data(), output.size(), "%d-%b-%Y %H:%M:%S", std::localtime(&now));
+
+	tm newtTime{};
+	[[maybe_unused]] errno_t success = localtime_s(&newtTime, &now);
+
+	[[maybe_unused]] size_t length = std::strftime(output.data(), output.size(), "%d-%b-%Y %H:%M:%S", &newtTime);
+
 	return output;
 }

@@ -2,14 +2,15 @@
 #include <SDL2/SDL_image.h>
 
 #include "Game.h"
+
+#include "../components/RigidBodyComponent.h"
+#include "../components/TransformComponent.h"
 #include "../helpers/Constants.h"
 #include "../helpers/Logger.h"
 
 Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_windowWidth(0), m_windowHeight(0), m_previousFrameTime(0)
 {
-	Logger::Log("Game constructor called!");
-	Logger::LogWarning("Game constructor called!");
-	Logger::LogError("Game constructor called!");
+	m_registry = std::make_unique<Registry>();
 }
 
 Game::~Game()
@@ -18,6 +19,10 @@ Game::~Game()
 
 void Game::Setup()
 {
+	Entity tank = m_registry->CreateEntity();
+	tank.AddComponent<TransformComponent>(glm::vec2(10.0f, 30.0f), glm::vec2(1.0f, 1.0f), 0.0f);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0f, 0.0f));
+	tank.RemoveComponent<RigidBodyComponent>();
 }
 
 void Game::ProcessInputs()
@@ -31,7 +36,7 @@ void Game::ProcessInputs()
 			m_isRunning = false;
 			break;
 		case SDL_KEYDOWN:
-			if(sdlEvent.key.keysym.sym == SDLK_ESCAPE) 
+			if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
 				m_isRunning = false;
 			break;
 		default:
@@ -42,13 +47,13 @@ void Game::ProcessInputs()
 
 void Game::Update()
 {
-	const int currentFrameTime = SDL_GetTicks();
+	const int currentFrameTime = static_cast<int>(SDL_GetTicks());
 	const int timeToWait = TIME_PER_FRAME - (currentFrameTime - m_previousFrameTime);
 
-	if(timeToWait > 0 && timeToWait <= TIME_PER_FRAME)
+	if (timeToWait > 0 && timeToWait <= TIME_PER_FRAME)
 		SDL_Delay(timeToWait);
-	
-	float deltaTime = (currentFrameTime - m_previousFrameTime) / 1000.0f;
+
+	float deltaTime = static_cast<float>(currentFrameTime - m_previousFrameTime) / 1000.0f;
 
 	m_previousFrameTime = currentFrameTime;
 }
@@ -62,7 +67,7 @@ void Game::Render()
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
 	SDL_FreeSurface(surface);
 
-	SDL_Rect dstRect = {10, 10, 32, 32};
+	constexpr SDL_Rect dstRect = { 10, 10, 32, 32 };
 	SDL_RenderCopy(m_renderer, texture, nullptr, &dstRect);
 
 	SDL_DestroyTexture(texture);

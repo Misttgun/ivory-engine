@@ -14,8 +14,7 @@ void System::RemoveEntity(const Entity entity)
 	{
 		if(m_entities.at(i) != entity)
 			continue;
-
-		m_entities.erase(m_entities.begin() + i);
+		m_entities.erase(m_entities.begin() + static_cast<ptrdiff_t>(i));
 		break;
 	}
 }
@@ -31,14 +30,23 @@ const Signature& System::GetSignature() const
 }
 
 void Registry::Update()
-{}
+{
+	for(const auto entity : m_entitiesToAdd)
+		AddEntityToSystems(entity);
+
+	m_entitiesToAdd.clear();
+}
 
 Entity Registry::CreateEntity()
 {
 	const auto entityId = m_numEntities++;
-	const Entity entity(entityId);
+
+	const Entity entity(entityId, this);
 
 	m_entitiesToAdd.insert(entity);
+
+	if(entityId >= static_cast<int>(m_entitySignatures.size()))
+		m_entitySignatures.resize(entityId + 1);
 
 	Logger::Log("Entity created with id = " + std::to_string(entityId));
 
