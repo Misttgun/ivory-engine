@@ -1,8 +1,9 @@
+#include <iostream>
+#include <SDL2/SDL_image.h>
+
 #include "Game.h"
 #include "../helpers/Constants.h"
 #include "../helpers/Logger.h"
-#include <SDL2/SDL_image.h>
-#include <iostream>
 
 Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_windowWidth(0), m_windowHeight(0), m_previousFrameTime(0)
 {
@@ -41,8 +42,8 @@ void Game::ProcessInputs()
 
 void Game::Update()
 {
-	auto currentFrameTime = SDL_GetTicks();
-	int timeToWait = TIME_PER_FRAME - (currentFrameTime - m_previousFrameTime);
+	const int currentFrameTime = SDL_GetTicks();
+	const int timeToWait = TIME_PER_FRAME - (currentFrameTime - m_previousFrameTime);
 
 	if(timeToWait > 0 && timeToWait <= TIME_PER_FRAME)
 		SDL_Delay(timeToWait);
@@ -73,7 +74,7 @@ void Game::Init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		Logger::LogError("Error initialiazing SDL.");
+		Logger::LogError("Error initializing SDL.");
 		return;
 	}
 
