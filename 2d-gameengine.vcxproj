@@ -145,12 +145,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\RigidBodyComponent.h" />
+    <ClInclude Include="src\components\SpriteComponent.h" />
     <ClInclude Include="src\ecs\ECS.h" />
     <ClInclude Include="src\components\TransformComponent.h" />
     <ClInclude Include="src\helpers\Constants.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\helpers\Logger.h" />
     <ClInclude Include="src\systems\MovementSystem.h" />
+    <ClInclude Include="src\systems\RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
