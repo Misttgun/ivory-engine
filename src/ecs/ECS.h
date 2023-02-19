@@ -65,7 +65,7 @@ public:
 
 	void AddEntity(Entity entity);
 	void RemoveEntity(Entity entity);
-	[[nodiscard]] const std::vector<Entity>& GetEntities() const;
+	[[nodiscard]] std::vector<Entity> GetEntities() const;
 	[[nodiscard]] const Signature& GetSignature() const;
 
 	template <typename T> void RequireComponent();

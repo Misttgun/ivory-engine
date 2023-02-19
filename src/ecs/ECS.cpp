@@ -19,7 +19,7 @@ void System::RemoveEntity(const Entity entity)
 	}
 }
 
-const std::vector<Entity>& System::GetEntities() const
+std::vector<Entity> System::GetEntities() const
 {
 	return m_entities;
 }

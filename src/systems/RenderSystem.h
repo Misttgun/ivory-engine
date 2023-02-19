@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include "../components/SpriteComponent.h"
 #include "../ecs/ECS.h"
 
@@ -12,16 +14,32 @@ public:
 		RequireComponent<SpriteComponent>();
 	}
 
-	void Update(SDL_Renderer* renderer) const
+	void Draw(SDL_Renderer* renderer, const std::unique_ptr<AssetStore>& assetStore) const
 	{
-		for (auto entity : GetEntities())
+		// Sorting entities by Z Index. Higher Z index get drawn on top of lower Z Index.
+		auto entities = GetEntities();
+
+		std::ranges::sort(entities, [](const Entity& a, const Entity& b)
+		{
+			const auto& spriteA = a.GetComponent<SpriteComponent>();
+			const auto& spriteB = b.GetComponent<SpriteComponent>();
+			return spriteA.m_zIndex < spriteB.m_zIndex;
+		});
+
+
+		for (auto entity : entities)
 		{
 			const auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& sprite = entity.GetComponent<SpriteComponent>();
 
-			SDL_Rect rect = {static_cast<int>(transform.m_position.x), static_cast<int>(transform.m_position.y), sprite.m_width, sprite.m_height};
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			SDL_RenderFillRect(renderer, &rect);
+			SDL_Rect srcRect = sprite.m_srcRect;
+
+			SDL_Rect dstRect = { static_cast<int>(transform.m_position.x), static_cast<int>(transform.m_position.y),
+			sprite.m_width * static_cast<int>(transform.m_scale.x), sprite.m_height * static_cast<int>(transform.m_scale.y) };
+
+
+			auto texture = assetStore->GetTexture(sprite.m_assetId);
+			SDL_RenderCopyEx(renderer, assetStore->GetTexture(sprite.m_assetId), &srcRect, &dstRect, transform.m_rotation, nullptr, SDL_FLIP_NONE);
 		}
 	}
 };
