@@ -15,6 +15,7 @@ private:
 	std::unique_ptr<AssetStore> m_assetStore;
 
 	bool m_isRunning;
+	bool m_isDebug;
 
 	int m_windowWidth;
 	int m_windowHeight;

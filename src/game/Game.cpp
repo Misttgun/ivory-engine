@@ -1,18 +1,19 @@
-#include <iostream>
-#include <SDL2/SDL_image.h>
-
 #include "Game.h"
-
 #include <fstream>
+#include <iostream>
 
+#include "../components/AnimationComponent.h"
+#include "../components/BoxColliderComponent.h"
 #include "../components/RigidBodyComponent.h"
 #include "../components/TransformComponent.h"
 #include "../helpers/Constants.h"
 #include "../helpers/Logger.h"
+#include "../systems/AnimationSystem.h"
+#include "../systems/CollisionSystem.h"
 #include "../systems/MovementSystem.h"
 #include "../systems/RenderSystem.h"
 
-Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_windowWidth(0), m_windowHeight(0), m_previousFrameTime(0)
+Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_isDebug(false), m_windowWidth(0), m_windowHeight(0), m_previousFrameTime(0)
 {
 	m_registry = std::make_unique<Registry>();
 	m_assetStore = std::make_unique<AssetStore>(m_renderer);
@@ -22,14 +23,18 @@ void Game::LoadLevel(int level)
 {
 	m_registry->AddSystem<MovementSystem>();
 	m_registry->AddSystem<RenderSystem>();
+	m_registry->AddSystem<AnimationSystem>();
+	m_registry->AddSystem<CollisionSystem>();
 
 	m_assetStore->AddTexture("tank_image_right", "./assets/images/tank-panther-right.png");
 	m_assetStore->AddTexture("truck_image_right", "./assets/images/truck-ford-right.png");
 	m_assetStore->AddTexture("tilemap-image", "./assets/tilemaps/jungle.png");
+	m_assetStore->AddTexture("chopper-image", "./assets/images/chopper-spritesheet.png");
+	m_assetStore->AddTexture("radar-image", "./assets/images/radar.png");
 
 	// Load the tilemap
 	int tileSize = 32;
-	constexpr double tileScale = 2.0;
+	constexpr double tileScale = 3;
 	constexpr int mapNumCols = 25;
 	constexpr int mapNumRows = 20;
 
@@ -55,15 +60,29 @@ void Game::LoadLevel(int level)
 
 	mapFile.close();
 
+	Entity chopper = m_registry->CreateEntity();
+	chopper.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+	chopper.AddComponent<AnimationComponent>(2, 24, true);
+
+	Entity radar = m_registry->CreateEntity();
+	radar.AddComponent<TransformComponent>(glm::vec2( static_cast<float>(m_windowWidth) - 74.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0);
+	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0f, 0.0f));
+	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 1);
+	radar.AddComponent<AnimationComponent>(8, 6, true);
+
 	Entity tank = m_registry->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0f, 0.0f));
+	tank.AddComponent<TransformComponent>(glm::vec2(500.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0f, 0.0f));
 	tank.AddComponent<SpriteComponent>("tank_image_right", 32, 32, 2);
+	tank.AddComponent<BoxColliderComponent>(glm::vec2(32.0f, 32.0f));
 
 	Entity truck = m_registry->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0f, 10.0f), glm::vec2(1.0f, 1.0f), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0f, 0.0f));
 	truck.AddComponent<SpriteComponent>("truck_image_right", 32, 32, 1);
+	truck.AddComponent<BoxColliderComponent>(glm::vec2(32.0f, 32.0f));
 }
 
 void Game::Setup()
@@ -84,6 +103,8 @@ void Game::ProcessInputs()
 		case SDL_KEYDOWN:
 			if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
 				m_isRunning = false;
+			if(sdlEvent.key.keysym.sym == SDLK_F1)
+				m_isDebug = !m_isDebug;
 			break;
 		default:
 			break;
@@ -104,6 +125,8 @@ void Game::Update()
 	m_previousFrameTime = currentFrameTime;
 
 	m_registry->GetSystem<MovementSystem>().Update(deltaTime);
+	m_registry->GetSystem<AnimationSystem>().Update(deltaTime);
+	m_registry->GetSystem<CollisionSystem>().Update();
 
 	m_registry->Update();
 }
@@ -114,6 +137,7 @@ void Game::Render()
 	SDL_RenderClear(m_renderer);
 
 	m_registry->GetSystem<RenderSystem>().Draw(m_renderer, m_assetStore);
+	m_registry->GetSystem<CollisionSystem>().Draw(m_renderer, m_isDebug);
 
 	SDL_RenderPresent(m_renderer);
 }

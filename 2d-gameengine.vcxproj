@@ -145,6 +145,8 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\AnimationComponent.h" />
+    <ClInclude Include="src\components\BoxColliderComponent.h" />
     <ClInclude Include="src\helpers\AssetStore.h" />
     <ClInclude Include="src\components\RigidBodyComponent.h" />
     <ClInclude Include="src\components\SpriteComponent.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="src\helpers\Constants.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\helpers\Logger.h" />
+    <ClInclude Include="src\systems\AnimationSystem.h" />
+    <ClInclude Include="src\systems\CollisionSystem.h" />
     <ClInclude Include="src\systems\MovementSystem.h" />
     <ClInclude Include="src\systems\RenderSystem.h" />
   </ItemGroup>
