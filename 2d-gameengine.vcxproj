@@ -147,6 +147,10 @@
   <ItemGroup>
     <ClInclude Include="src\components\AnimationComponent.h" />
     <ClInclude Include="src\components\BoxColliderComponent.h" />
+    <ClInclude Include="src\events\CollisionEvent.h" />
+    <ClInclude Include="src\events\Event.h" />
+    <ClInclude Include="src\events\EventBus.h" />
+    <ClInclude Include="src\events\KeyPressedEvent.h" />
     <ClInclude Include="src\helpers\AssetStore.h" />
     <ClInclude Include="src\components\RigidBodyComponent.h" />
     <ClInclude Include="src\components\SpriteComponent.h" />
@@ -157,6 +161,8 @@
     <ClInclude Include="src\helpers\Logger.h" />
     <ClInclude Include="src\systems\AnimationSystem.h" />
     <ClInclude Include="src\systems\CollisionSystem.h" />
+    <ClInclude Include="src\systems\DamageSystem.h" />
+    <ClInclude Include="src\systems\KeyboardControlSystem.h" />
     <ClInclude Include="src\systems\MovementSystem.h" />
     <ClInclude Include="src\systems\RenderSystem.h" />
   </ItemGroup>

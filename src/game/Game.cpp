@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <fstream>
 #include <iostream>
-
 #include "../components/AnimationComponent.h"
 #include "../components/BoxColliderComponent.h"
 #include "../components/RigidBodyComponent.h"
@@ -10,6 +9,8 @@
 #include "../helpers/Logger.h"
 #include "../systems/AnimationSystem.h"
 #include "../systems/CollisionSystem.h"
+#include "../systems/DamageSystem.h"
+#include "../systems/KeyboardControlSystem.h"
 #include "../systems/MovementSystem.h"
 #include "../systems/RenderSystem.h"
 
@@ -17,14 +18,17 @@ Game::Game() : m_window{}, m_renderer{}, m_isRunning(false), m_isDebug(false), m
 {
 	m_registry = std::make_unique<Registry>();
 	m_assetStore = std::make_unique<AssetStore>(m_renderer);
+	m_eventBus = std::make_unique<EventBus>();
 }
 
-void Game::LoadLevel(int level)
+void Game::LoadLevel(int level) const
 {
 	m_registry->AddSystem<MovementSystem>();
 	m_registry->AddSystem<RenderSystem>();
 	m_registry->AddSystem<AnimationSystem>();
 	m_registry->AddSystem<CollisionSystem>();
+	m_registry->AddSystem<DamageSystem>();
+	m_registry->AddSystem<KeyboardControlSystem>();
 
 	m_assetStore->AddTexture("tank_image_right", "./assets/images/tank-panther-right.png");
 	m_assetStore->AddTexture("truck_image_right", "./assets/images/truck-ford-right.png");
@@ -85,7 +89,7 @@ void Game::LoadLevel(int level)
 	truck.AddComponent<BoxColliderComponent>(glm::vec2(32.0f, 32.0f));
 }
 
-void Game::Setup()
+void Game::Setup() const
 {
 	LoadLevel(1);
 }
@@ -105,6 +109,7 @@ void Game::ProcessInputs()
 				m_isRunning = false;
 			if(sdlEvent.key.keysym.sym == SDLK_F1)
 				m_isDebug = !m_isDebug;
+			m_eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
 			break;
 		default:
 			break;
@@ -124,14 +129,19 @@ void Game::Update()
 
 	m_previousFrameTime = currentFrameTime;
 
-	m_registry->GetSystem<MovementSystem>().Update(deltaTime);
-	m_registry->GetSystem<AnimationSystem>().Update(deltaTime);
-	m_registry->GetSystem<CollisionSystem>().Update();
+	m_eventBus->Reset();
+
+	m_registry->GetSystem<DamageSystem>().SubscribeToEvent(m_eventBus);
+	m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvent(m_eventBus);
 
 	m_registry->Update();
+
+	m_registry->GetSystem<MovementSystem>().Update(deltaTime);
+	m_registry->GetSystem<AnimationSystem>().Update(deltaTime);
+	m_registry->GetSystem<CollisionSystem>().Update(m_eventBus);
 }
 
-void Game::Render()
+void Game::Render() const
 {
 	SDL_SetRenderDrawColor(m_renderer, 21, 21, 21, 255);
 	SDL_RenderClear(m_renderer);
@@ -187,7 +197,7 @@ void Game::Run()
 	}
 }
 
-void Game::Destroy()
+void Game::Destroy() const
 {
 	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);

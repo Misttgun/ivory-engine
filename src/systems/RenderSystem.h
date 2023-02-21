@@ -1,7 +1,7 @@
 #pragma once
 
 #include <algorithm>
-
+#include "../helpers/AssetStore.h"
 #include "../components/SpriteComponent.h"
 #include "../ecs/ECS.h"
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bitset>
+#include <deque>
 #include <memory>
 #include <set>
 #include <typeindex>
@@ -29,6 +30,7 @@ public:
 	template <typename T> T& GetComponent() const;
 
 	[[nodiscard]] int GetId() const { return m_id; }
+	void Destroy() const;
 
 	bool operator ==(const Entity& other) const { return m_id == other.m_id; }
 	bool operator !=(const Entity& other) const { return m_id != other.m_id; }
@@ -48,7 +50,7 @@ class Component : public IComponent
 public:
 	static int GetId()
 	{
-		static auto id = m_nextId++;
+		static int id = m_nextId++;
 		return id;
 	}
 };
@@ -117,12 +119,15 @@ private:
 	std::set<Entity> m_entitiesToAdd;
 	std::set<Entity> m_entitiesToDestroy;
 
+	std::deque<int> m_freeIds;
+
 public:
 	Registry() = default;
 
 	void Update();
 
 	Entity CreateEntity();
+	void DestroyEntity(Entity entity);
 
 	template <typename T, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 	template <typename T> void RemoveComponent(Entity entity);
@@ -135,6 +140,7 @@ public:
 	template <typename T> T& GetSystem() const;
 
 	void AddEntityToSystems(Entity entity) const;
+	void RemoveEntityFromSystems(const Entity& entity) const;
 };
 
 template <typename T>
