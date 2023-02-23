@@ -11,6 +11,7 @@ class Game
 private:
 	SDL_Window* m_window;
 	SDL_Renderer* m_renderer;
+	SDL_Rect m_camera;
 
 	std::unique_ptr<Registry> m_registry;
 	std::unique_ptr<AssetStore> m_assetStore;
@@ -18,9 +19,6 @@ private:
 
 	bool m_isRunning;
 	bool m_isDebug;
-
-	int m_windowWidth;
-	int m_windowHeight;
 
 	int m_previousFrameTime;
 
@@ -37,5 +35,10 @@ public:
 	void Init();
 	void Run();
 	void Destroy() const;
+
+	static int m_windowWidth;
+	static int m_windowHeight;
+	static int m_mapWidth;
+	static int m_mapHeight;
 };
 

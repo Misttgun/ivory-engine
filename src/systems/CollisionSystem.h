@@ -52,7 +52,7 @@ public:
 		}
 	}
 
-	void Draw(SDL_Renderer* renderer, const bool isDebug = false) const
+	void Draw(SDL_Renderer* renderer, const SDL_Rect& camera, const bool isDebug = false) const
 	{
 		if(isDebug == false)
 			return;
@@ -62,8 +62,11 @@ public:
 			const auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& collider = entity.GetComponent<BoxColliderComponent>();
 			SDL_Rect boundingBox = {
-				static_cast<int>(transform.m_position.x + collider.m_offset.x), static_cast<int>(transform.m_position.y + collider.m_offset.y),
-				static_cast<int>(collider.m_size.x * transform.m_scale.x), static_cast<int>(collider.m_size.y * transform.m_scale.y)};
+				static_cast<int>(transform.m_position.x + collider.m_offset.x - camera.x),
+				static_cast<int>(transform.m_position.y + collider.m_offset.y - camera.y),
+				static_cast<int>(collider.m_size.x * transform.m_scale.x),
+				static_cast<int>(collider.m_size.y * transform.m_scale.y)
+			};
 
 			SDL_SetRenderDrawColor(renderer, collider.m_debugColor.r, collider.m_debugColor.g, collider.m_debugColor.b, collider.m_debugColor.a);
 			SDL_RenderDrawRect(renderer, &boundingBox);

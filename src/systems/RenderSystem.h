@@ -14,28 +14,32 @@ public:
 		RequireComponent<SpriteComponent>();
 	}
 
-	void Draw(SDL_Renderer* renderer, const std::unique_ptr<AssetStore>& assetStore) const
+	void Draw(SDL_Renderer* renderer, const std::unique_ptr<AssetStore>& assetStore, const SDL_Rect& camera) const
 	{
 		// Sorting entities by Z Index. Higher Z index get drawn on top of lower Z Index.
 		auto entities = GetEntities();
 
 		std::ranges::sort(entities, [](const Entity& a, const Entity& b)
-		{
-			const auto& spriteA = a.GetComponent<SpriteComponent>();
-			const auto& spriteB = b.GetComponent<SpriteComponent>();
-			return spriteA.m_zIndex < spriteB.m_zIndex;
-		});
+						  {
+							  const auto& spriteA = a.GetComponent<SpriteComponent>();
+		const auto& spriteB = b.GetComponent<SpriteComponent>();
+		return spriteA.m_zIndex < spriteB.m_zIndex;
+						  });
 
 
-		for (auto entity : entities)
+		for(auto entity : entities)
 		{
 			const auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& sprite = entity.GetComponent<SpriteComponent>();
 
 			SDL_Rect srcRect = sprite.m_srcRect;
 
-			SDL_Rect dstRect = { static_cast<int>(transform.m_position.x), static_cast<int>(transform.m_position.y),
-			sprite.m_width * static_cast<int>(transform.m_scale.x), sprite.m_height * static_cast<int>(transform.m_scale.y) };
+			SDL_Rect dstRect = {
+				static_cast<int>(transform.m_position.x - (sprite.m_isFixed ? 0 : camera.x)),
+				static_cast<int>(transform.m_position.y - (sprite.m_isFixed ? 0 :camera.y)),
+				sprite.m_width * static_cast<int>(transform.m_scale.x),
+				sprite.m_height * static_cast<int>(transform.m_scale.y)
+			};
 
 
 			auto texture = assetStore->GetTexture(sprite.m_assetId);

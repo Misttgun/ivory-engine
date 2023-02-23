@@ -30,6 +30,7 @@ public:
 	template <typename T> T& GetComponent() const;
 
 	[[nodiscard]] int GetId() const { return m_id; }
+	[[nodiscard]] Registry* GetRegistry() const { return m_registry; }
 	void Destroy() const;
 
 	bool operator ==(const Entity& other) const { return m_id == other.m_id; }
@@ -156,10 +157,10 @@ void Registry::AddComponent(const Entity entity, TArgs&& ...args)
 	const auto componentId = Component<T>::GetId();
 	const auto entityId = entity.GetId();
 
-	if (componentId >= m_componentPools.size())
+	if(componentId >= m_componentPools.size())
 		m_componentPools.resize(componentId + 1, nullptr);
 
-	if (!m_componentPools[componentId])
+	if(!m_componentPools[componentId])
 	{
 		std::shared_ptr<Pool<T>> newComponentPool = std::make_shared<Pool<T>>();
 		m_componentPools[componentId] = newComponentPool;
@@ -167,7 +168,7 @@ void Registry::AddComponent(const Entity entity, TArgs&& ...args)
 
 	std::shared_ptr<Pool<T>> componentPool = std::static_pointer_cast<Pool<T>>(m_componentPools[componentId]);
 
-	if (entityId >= componentPool->GetSize())
+	if(entityId >= componentPool->GetSize())
 	{
 		componentPool->Resize(m_numEntities);
 	}

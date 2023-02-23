@@ -25,7 +25,7 @@ template <typename TOwner, typename TEvent>
 class EventCallback : public IEventCallback
 {
 private:
-	typedef void (TOwner::* CallbackFunction)(TEvent&);
+	typedef void (TOwner::* CallbackFunction)(const TEvent&);
 
 	TOwner* m_ownerInstance;
 	CallbackFunction m_callbackFunction;
@@ -67,7 +67,7 @@ public:
 	// Example: eventBus->SubscribeToEvent<CollisionEvent>(this, &Game::onCollision);
 	/////////////////////////////////////////////////////////////////////// 
 	template <typename TEvent, typename TOwner>
-	void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::* callbackFunction)(TEvent&))
+	void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::* callbackFunction)(const TEvent&))
 	{
 		if(!m_subscribers[typeid(TEvent)].get())
 		{

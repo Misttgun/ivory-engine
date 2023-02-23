@@ -20,15 +20,10 @@ public:
 		eventBus->SubscribeToEvent<CollisionEvent>(this, &DamageSystem::OnCollision);
 	}
 
-	void Update()
-	{
-
-	}
-
 private:
-	void OnCollision(CollisionEvent& event)
+	void OnCollision(const CollisionEvent& event)
 	{
-		event.m_entityA.Destroy();
-		event.m_entityB.Destroy();
+		/*event.m_entityA.Destroy();
+		event.m_entityB.Destroy();*/
 	}
 };
