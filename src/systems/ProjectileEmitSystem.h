@@ -3,6 +3,7 @@
 #include "../components/ProjectileComponent.h"
 #include "../components/ProjectileEmitterComponent.h"
 #include "../components/TransformComponent.h"
+#include "../components/tags/ProjectileTag.h"
 #include "../ecs/ECS.h"
 
 class ProjectileEmitSystem : public System
@@ -19,7 +20,7 @@ public:
 		for(auto entity : GetEntities())
 		{
 			//Ignore the player
-			if(entity.HasComponent<KeyboardControlComponent>())
+			if(entity.HasComponent<PlayerTag>())
 				continue;
 
 			auto& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
@@ -39,9 +40,10 @@ public:
 
 				// Add a new projectile entity to the registry
 				Entity projectile = registry->CreateEntity();
+				projectile.AddComponent<ProjectileTag>();
 				projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
 				projectile.AddComponent<RigidBodyComponent>(projectileEmitter.m_projectileVelocity);
-				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
+				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 1);
 				projectile.AddComponent<BoxColliderComponent>(glm::vec2(4, 4));
 				projectile.AddComponent<ProjectileComponent>(projectileEmitter.m_isFriendly, projectileEmitter.m_projectileDamage, projectileEmitter.m_projectileDuration);
 
@@ -63,7 +65,7 @@ private:
 
 		for(auto entity : GetEntities())
 		{
-			if(entity.HasComponent<KeyboardControlComponent>() == false)
+			if(entity.HasComponent<PlayerTag>() == false)
 				continue;
 
 			auto& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
@@ -83,6 +85,7 @@ private:
 
 			// Add a new projectile entity to the registry
 			Entity projectile = entity.GetRegistry()->CreateEntity();
+			projectile.AddComponent<ProjectileTag>();
 			projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
 			projectile.AddComponent<RigidBodyComponent>(projectileEmitter.m_projectileVelocity * normalizedVelocity);
 			projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);

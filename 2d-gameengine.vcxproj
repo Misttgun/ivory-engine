@@ -147,11 +147,15 @@
   <ItemGroup>
     <ClInclude Include="src\components\AnimationComponent.h" />
     <ClInclude Include="src\components\BoxColliderComponent.h" />
-    <ClInclude Include="src\components\CameraFollowComponent.h" />
+    <ClInclude Include="src\components\tags\CameraFollowTag.h" />
     <ClInclude Include="src\components\HealthComponent.h" />
     <ClInclude Include="src\components\KeyboardControlComponent.h" />
     <ClInclude Include="src\components\ProjectileComponent.h" />
     <ClInclude Include="src\components\ProjectileEmitterComponent.h" />
+    <ClInclude Include="src\components\tags\EnemyTag.h" />
+    <ClInclude Include="src\components\tags\PlayerTag.h" />
+    <ClInclude Include="src\components\tags\ProjectileTag.h" />
+    <ClInclude Include="src\components\TextLabelComponent.h" />
     <ClInclude Include="src\events\CollisionEvent.h" />
     <ClInclude Include="src\events\Event.h" />
     <ClInclude Include="src\events\EventBus.h" />
@@ -172,7 +176,9 @@
     <ClInclude Include="src\systems\MovementSystem.h" />
     <ClInclude Include="src\systems\ProjectileEmitSystem.h" />
     <ClInclude Include="src\systems\ProjectileLifecycleSystem.h" />
+    <ClInclude Include="src\systems\RenderHealthBarSystem.h" />
     <ClInclude Include="src\systems\RenderSystem.h" />
+    <ClInclude Include="src\systems\RenderTextSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -95,7 +95,7 @@
     <ClInclude Include="src\components\KeyboardControlComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\CameraFollowComponent.h">
+    <ClInclude Include="src\components\tags\CameraFollowTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\CameraMovementSystem.h">
@@ -114,6 +114,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\ProjectileLifecycleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\tags\PlayerTag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\tags\ProjectileTag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\tags\EnemyTag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\TextLabelComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\RenderTextSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\RenderHealthBarSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

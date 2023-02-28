@@ -39,7 +39,6 @@ public:
 				{
 					aCollider.m_debugColor = {255, 0, 0, 255};
 					bCollider.m_debugColor = {255, 0, 0, 255};
-					Logger::Log("Collision detected between entity id: " + std::to_string(a.GetId()) + " and entity id: " + std::to_string(b.GetId()));
 
 					eventBus->EmitEvent<CollisionEvent>(a, b);
 				}

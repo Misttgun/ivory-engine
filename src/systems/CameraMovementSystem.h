@@ -1,5 +1,5 @@
 #pragma once
-#include "../components/CameraFollowComponent.h"
+#include "../components/tags/CameraFollowTag.h"
 #include "../ecs/ECS.h"
 
 
@@ -10,7 +10,7 @@ class CameraMovementSystem : public System
 public:
 	CameraMovementSystem()
 	{
-		RequireComponent<CameraFollowComponent>();
+		RequireComponent<CameraFollowTag>();
 		RequireComponent<TransformComponent>();
 	}
 

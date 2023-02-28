@@ -44,11 +44,21 @@ void Registry::Update()
 
 	for(const auto entity : m_entitiesToDestroy)
 	{
+		const int entityId = entity.GetId();
+
 		RemoveEntityFromSystems(entity);
 
-		const int entityId = entity.GetId();
+		for (const auto& pool : m_componentPools)
+		{
+			if(pool == nullptr)
+				continue;
+
+			pool->RemoveEntityFromPool(entityId);
+		}
+
 		m_entitySignatures[entityId].reset();
 		m_freeIds.push_back(entityId);
+
 		Logger::Log("Entity with id = " + std::to_string(entityId) + " was destroyed.");
 	}
 
