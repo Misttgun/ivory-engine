@@ -226,7 +226,7 @@ void Registry::AddComponent(const Entity entity, TArgs&& ...args)
 
 	m_entitySignatures[entityId].set(componentId);
 
-	Logger::Log("Component id = " + std::to_string(componentId) + " was added to entity id: " + std::to_string(entityId));
+	//Logger::Log("Component id = " + std::to_string(componentId) + " was added to entity id: " + std::to_string(entityId));
 }
 
 template<typename T>
@@ -240,7 +240,7 @@ void Registry::RemoveComponent(const Entity entity)
 
 	m_entitySignatures[entityId].set(componentId, false);
 
-	Logger::Log("Component id = " + std::to_string(componentId) + " was removed from entity id: " + std::to_string(entityId));
+	//Logger::Log("Component id = " + std::to_string(componentId) + " was removed from entity id: " + std::to_string(entityId));
 }
 
 template <typename T>

@@ -59,7 +59,7 @@ void Registry::Update()
 		m_entitySignatures[entityId].reset();
 		m_freeIds.push_back(entityId);
 
-		Logger::Log("Entity with id = " + std::to_string(entityId) + " was destroyed.");
+		//Logger::Log("Entity with id = " + std::to_string(entityId) + " was destroyed.");
 	}
 
 	m_entitiesToDestroy.clear();
@@ -84,7 +84,7 @@ Entity Registry::CreateEntity()
 	const Entity entity(entityId, this);
 	m_entitiesToAdd.insert(entity);
 
-	Logger::Log("Entity created with id = " + std::to_string(entityId));
+	//Logger::Log("Entity created with id = " + std::to_string(entityId));
 
 	return entity;
 }

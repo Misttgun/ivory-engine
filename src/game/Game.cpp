@@ -23,6 +23,11 @@
 #include "../systems/RenderHealthBarSystem.h"
 #include "../systems/RenderSystem.h"
 #include "../systems/RenderTextSystem.h"
+#include <imgui.h>
+#include <imgui_impl_sdl.h>
+#include <imgui_impl_sdlrenderer.h>
+
+#include "../systems/RenderGUISystem.h"
 
 int Game::m_windowWidth = 0;
 int Game::m_windowHeight = 0;
@@ -49,6 +54,7 @@ void Game::LoadLevel(int level) const
 	m_registry->AddSystem<ProjectileLifecycleSystem>();
 	m_registry->AddSystem<RenderTextSystem>();
 	m_registry->AddSystem<RenderHealthBarSystem>();
+	m_registry->AddSystem<RenderGUISystem>();
 
 	m_assetStore->AddTexture("tank_image_right", "./assets/images/tank-panther-right.png");
 	m_assetStore->AddTexture("truck_image_right", "./assets/images/truck-ford-right.png");
@@ -59,7 +65,7 @@ void Game::LoadLevel(int level) const
 
 	m_assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 20);
 	m_assetStore->AddFont("pico8-font-5", "./assets/fonts/pico8.ttf", 5);
-    m_assetStore->AddFont("pico8-font-10", "./assets/fonts/pico8.ttf", 10);
+	m_assetStore->AddFont("pico8-font-10", "./assets/fonts/pico8.ttf", 10);
 
 	// Load the tilemap
 	int tileSize = 32;
@@ -129,7 +135,7 @@ void Game::LoadLevel(int level) const
 
 	Entity label = m_registry->CreateEntity();
 	SDL_Color green = {0, 255, 0, 255};
-    label.AddComponent<TextLabelComponent>(glm::vec2(m_windowWidth / 2 - 40, 10), "CHOPPER 1.0", "charriot-font", green, true);
+	label.AddComponent<TextLabelComponent>(glm::vec2(m_windowWidth / 2 - 40, 10), "CHOPPER 1.0", "charriot-font", green, true);
 }
 
 void Game::Setup() const
@@ -142,6 +148,14 @@ void Game::ProcessInputs()
 	SDL_Event sdlEvent{};
 	while(SDL_PollEvent(&sdlEvent))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+		ImGuiIO& io = ImGui::GetIO();
+		int mouseX, mouseY;
+		const auto buttons = SDL_GetMouseState(&mouseX, &mouseY);
+		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+		io.MouseDown[0] = buttons && SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons && SDL_BUTTON(SDL_BUTTON_RIGHT);
+
 		switch(sdlEvent.type)
 		{
 			case SDL_QUIT:
@@ -194,9 +208,17 @@ void Game::Render() const
 	SDL_RenderClear(m_renderer);
 
 	m_registry->GetSystem<RenderSystem>().Draw(m_renderer, m_assetStore, m_camera);
-	m_registry->GetSystem<CollisionSystem>().Draw(m_renderer, m_camera, m_isDebug);
 	m_registry->GetSystem<RenderTextSystem>().Draw(m_renderer, m_assetStore, m_camera);
 	m_registry->GetSystem<RenderHealthBarSystem>().Draw(m_renderer, m_assetStore, m_camera);
+
+	if(m_isDebug)
+	{
+		m_registry->GetSystem<RenderGUISystem>().Draw(m_registry);
+		m_registry->GetSystem<CollisionSystem>().Draw(m_renderer, m_camera);
+
+		ImGui::Render();
+		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+	}
 
 	SDL_RenderPresent(m_renderer);
 }
@@ -232,6 +254,17 @@ void Game::Init()
 		return;
 	}
 
+	// Initialize IMGUI context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer);
+	ImGui_ImplSDLRenderer_Init(m_renderer);
+
 	m_camera.x = 0;
 	m_camera.y = 0;
 	m_camera.w = m_windowWidth;
@@ -255,6 +288,11 @@ void Game::Run()
 
 void Game::Destroy() const
 {
+	// Cleanup
+	ImGui_ImplSDLRenderer_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
 	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();

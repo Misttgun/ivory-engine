@@ -46,7 +46,7 @@ private:
 			OnProjectileHitsEntity(b, a, true);
 		}
 
-		Logger::Log("Collision detected between entity id: " + std::to_string(a.GetId()) + " and entity id: " + std::to_string(b.GetId()));
+		//Logger::Log("Collision detected between entity id: " + std::to_string(a.GetId()) + " and entity id: " + std::to_string(b.GetId()));
 	}
 
 	static void OnProjectileHitsEntity(const Entity projectile, const Entity entity, const bool isProjectileFriendly)

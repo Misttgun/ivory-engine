@@ -134,5 +134,8 @@
     <ClInclude Include="src\systems\RenderHealthBarSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\systems\RenderGUISystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

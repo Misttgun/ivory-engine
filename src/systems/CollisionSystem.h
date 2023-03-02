@@ -51,11 +51,8 @@ public:
 		}
 	}
 
-	void Draw(SDL_Renderer* renderer, const SDL_Rect& camera, const bool isDebug = false) const
+	void Draw(SDL_Renderer* renderer, const SDL_Rect& camera) const
 	{
-		if(isDebug == false)
-			return;
-
 		for(auto entity : GetEntities())
 		{
 			const auto& transform = entity.GetComponent<TransformComponent>();
