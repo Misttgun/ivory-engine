@@ -2,7 +2,6 @@
 
 #include "../components/BoxColliderComponent.h"
 #include "../components/ProjectileComponent.h"
-#include "../components/TextLabelComponent.h"
 #include "../components/tags/ProjectileTag.h"
 #include "../ecs/ECS.h"
 #include "../events/CollisionEvent.h"
@@ -18,7 +17,7 @@ public:
 		RequireComponent<BoxColliderComponent>();
 	}
 
-	void SubscribeToEvent(const std::unique_ptr<EventBus>& eventBus)
+	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
 	{
 		eventBus->SubscribeToEvent<CollisionEvent>(this, &DamageSystem::OnCollision);
 	}

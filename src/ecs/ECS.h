@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../events/EventBus.h"
 #include "../helpers/Constants.h"
 #include "../helpers/Logger.h"
 
@@ -173,9 +174,13 @@ private:
 	std::set<Entity> m_entitiesToDestroy;
 
 	std::deque<int> m_freeIds;
+	std::shared_ptr<EventBus> m_eventBus;
 
 public:
 	Registry() = default;
+
+	explicit Registry(std::shared_ptr<EventBus> eventBus) : m_eventBus(std::move(eventBus))
+	{}
 
 	void Update();
 

@@ -1,4 +1,6 @@
 #include "ECS.h"
+
+#include "../events/DestroyEvent.h"
 #include "../helpers/Logger.h"
 
 int IComponent::m_nextId = 0;
@@ -92,6 +94,7 @@ Entity Registry::CreateEntity()
 void Registry::DestroyEntity(const Entity entity)
 {
 	m_entitiesToDestroy.insert(entity);
+	m_eventBus->EmitEvent<DestroyEvent>(entity);
 }
 
 void Registry::AddEntityToSystems(const Entity entity) const

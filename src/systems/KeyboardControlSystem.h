@@ -16,7 +16,7 @@ public:
 		RequireComponent<SpriteComponent>();
 	}
 
-	void SubscribeToEvent(const std::unique_ptr<EventBus>& eventBus)
+	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
 	{
 		eventBus->SubscribeToEvent<KeyPressedEvent>(this, &KeyboardControlSystem::OnKeyPressed);
 	}

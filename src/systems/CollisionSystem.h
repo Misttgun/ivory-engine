@@ -6,6 +6,7 @@
 #include "../components/TransformComponent.h"
 #include "../ecs/ECS.h"
 #include "../events/CollisionEvent.h"
+#include "../events/DestroyEvent.h"
 
 class CollisionSystem : public System
 {
@@ -16,7 +17,12 @@ public:
 		RequireComponent<BoxColliderComponent>();
 	}
 
-	void Update(const std::unique_ptr<EventBus>& eventBus) const
+	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
+	{
+		eventBus->SubscribeToEvent<DestroyEvent>(this, &CollisionSystem::OnEntityDestroyed);
+	}
+
+	void Update(const std::shared_ptr<EventBus>& eventBus) const
 	{
 		const auto entities = GetEntities();
 
@@ -37,17 +43,24 @@ public:
 
 				if(isColliding)
 				{
-					aCollider.m_debugColor = {255, 0, 0, 255};
-					bCollider.m_debugColor = {255, 0, 0, 255};
+					if(aCollider.IsCollidingWithEntity(b.GetId()) == true) // If is colliding with b, b is colliding with a
+						continue;
 
+					aCollider.AddCollidingEntity(b.GetId());
+					bCollider.AddCollidingEntity(a.GetId());
 					eventBus->EmitEvent<CollisionEvent>(a, b);
 				}
 				else
 				{
-					aCollider.m_debugColor = {255, 255, 0, 255};
-					bCollider.m_debugColor = {255, 255, 0, 255};
+					aCollider.RemoveCollidingEntity(b.GetId());
+					bCollider.RemoveCollidingEntity(a.GetId());
 				}
 			}
+
+			if(aCollider.IsCollidingWithAnyEntity())
+				aCollider.m_debugColor = {255, 0, 0, 255};
+			else
+				aCollider.m_debugColor = {255, 255, 0, 255};
 		}
 	}
 
@@ -73,5 +86,16 @@ private:
 	static bool CheckAABBCollision(const glm::vec2& aPos, const glm::vec2& aSize, const glm::vec2& bPos, const glm::vec2& bSize)
 	{
 		return (aPos.x < bPos.x + bSize.x && aPos.x + aSize.x > bPos.x && aPos.y < bPos.y + bSize.y && aPos.y + aSize.y > bPos.y);
+	}
+
+	void OnEntityDestroyed(const DestroyEvent& event)
+	{
+		const auto destroyedEntity = event.m_destroyedEntity;
+
+		for(auto entity : GetEntities())
+		{
+			auto& collider = entity.GetComponent<BoxColliderComponent>();
+			collider.RemoveCollidingEntity(destroyedEntity.GetId());
+		}
 	}
 };

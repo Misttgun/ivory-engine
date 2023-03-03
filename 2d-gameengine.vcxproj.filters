@@ -137,5 +137,11 @@
     <ClInclude Include="src\systems\RenderGUISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\tags\ObstacleTag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\DestroyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

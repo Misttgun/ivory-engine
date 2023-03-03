@@ -27,6 +27,7 @@
 #include <imgui_impl_sdl.h>
 #include <imgui_impl_sdlrenderer.h>
 
+#include "../components/tags/ObstacleTag.h"
 #include "../systems/RenderGUISystem.h"
 
 int Game::m_windowWidth = 0;
@@ -36,9 +37,9 @@ int Game::m_mapHeight = 0;
 
 Game::Game() : m_window{}, m_renderer{}, m_camera{}, m_isRunning(false), m_isDebug(false), m_previousFrameTime(0)
 {
-	m_registry = std::make_unique<Registry>();
+	m_eventBus = std::make_shared<EventBus>();
+	m_registry = std::make_unique<Registry>(m_eventBus);
 	m_assetStore = std::make_unique<AssetStore>(m_renderer);
-	m_eventBus = std::make_unique<EventBus>();
 }
 
 void Game::LoadLevel(int level) const
@@ -62,6 +63,7 @@ void Game::LoadLevel(int level) const
 	m_assetStore->AddTexture("chopper-image", "./assets/images/chopper-spritesheet.png");
 	m_assetStore->AddTexture("radar-image", "./assets/images/radar.png");
 	m_assetStore->AddTexture("bullet-image", "./assets/images/bullet.png");
+	m_assetStore->AddTexture("tree-image", "./assets/images/tree.png");
 
 	m_assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 20);
 	m_assetStore->AddFont("pico8-font-5", "./assets/fonts/pico8.ttf", 5);
@@ -118,10 +120,10 @@ void Game::LoadLevel(int level) const
 	Entity tank = m_registry->CreateEntity();
 	tank.AddComponent<EnemyTag>();
 	tank.AddComponent<TransformComponent>(glm::vec2(500), glm::vec2(1, 1), 0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(20, 0));
 	tank.AddComponent<SpriteComponent>("tank_image_right", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(glm::vec2(25, 18), glm::vec2(5, 7));
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 3);
+	//tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 3);
 	tank.AddComponent<HealthComponent>(50);
 
 	Entity truck = m_registry->CreateEntity();
@@ -132,6 +134,19 @@ void Game::LoadLevel(int level) const
 	truck.AddComponent<BoxColliderComponent>(glm::vec2(25, 20), glm::vec2(5, 7));
 	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 2);
 	truck.AddComponent<HealthComponent>(50);
+
+	Entity treeA = m_registry->CreateEntity();
+	treeA.AddComponent<ObstacleTag>();
+	treeA.AddComponent<TransformComponent>(glm::vec2(600,495), glm::vec2(1, 1), 0);
+	treeA.AddComponent<SpriteComponent>("tree-image", 16, 32, 1);
+	treeA.AddComponent<BoxColliderComponent>(glm::vec2(16, 32));
+
+	Entity treeB = m_registry->CreateEntity();
+	treeB.AddComponent<ObstacleTag>();
+	treeB.AddComponent<TransformComponent>(glm::vec2(400,495), glm::vec2(1, 1), 0);
+	treeB.AddComponent<SpriteComponent>("tree-image", 16, 32, 1);
+	treeB.AddComponent<BoxColliderComponent>(glm::vec2(16, 32));
+	
 
 	Entity label = m_registry->CreateEntity();
 	SDL_Color green = {0, 255, 0, 255};
@@ -182,7 +197,9 @@ void Game::Update()
 	if(timeToWait > 0 && timeToWait <= TIME_PER_FRAME)
 		SDL_Delay(timeToWait);
 
-	const float deltaTime = static_cast<float>(currentFrameTime - m_previousFrameTime) / 1000.0f;
+	float deltaTime = static_cast<float>(currentFrameTime - m_previousFrameTime) / 1000.0f;
+	if(deltaTime > TIME_PER_FRAME)
+		deltaTime = TIME_PER_FRAME;
 
 	m_previousFrameTime = currentFrameTime;
 
@@ -191,6 +208,8 @@ void Game::Update()
 	m_registry->GetSystem<DamageSystem>().SubscribeToEvent(m_eventBus);
 	m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvent(m_eventBus);
 	m_registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvent(m_eventBus);
+	m_registry->GetSystem<MovementSystem>().SubscribeToEvent(m_eventBus);
+	m_registry->GetSystem<CollisionSystem>().SubscribeToEvent(m_eventBus);
 
 	m_registry->Update();
 

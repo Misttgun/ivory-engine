@@ -15,7 +15,7 @@ private:
 
 	std::unique_ptr<Registry> m_registry;
 	std::unique_ptr<AssetStore> m_assetStore;
-	std::unique_ptr<EventBus> m_eventBus;
+	std::shared_ptr<EventBus> m_eventBus;
 
 	bool m_isRunning;
 	bool m_isDebug;

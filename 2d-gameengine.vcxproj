@@ -153,10 +153,12 @@
     <ClInclude Include="src\components\ProjectileComponent.h" />
     <ClInclude Include="src\components\ProjectileEmitterComponent.h" />
     <ClInclude Include="src\components\tags\EnemyTag.h" />
+    <ClInclude Include="src\components\tags\ObstacleTag.h" />
     <ClInclude Include="src\components\tags\PlayerTag.h" />
     <ClInclude Include="src\components\tags\ProjectileTag.h" />
     <ClInclude Include="src\components\TextLabelComponent.h" />
     <ClInclude Include="src\events\CollisionEvent.h" />
+    <ClInclude Include="src\events\DestroyEvent.h" />
     <ClInclude Include="src\events\Event.h" />
     <ClInclude Include="src\events\EventBus.h" />
     <ClInclude Include="src\events\KeyPressedEvent.h" />
