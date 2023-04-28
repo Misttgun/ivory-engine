@@ -183,6 +183,9 @@
     <ClInclude Include="src\systems\RenderSystem.h" />
     <ClInclude Include="src\systems\RenderTextSystem.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\scripts\myscript.lua" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
