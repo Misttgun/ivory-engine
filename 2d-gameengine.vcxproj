@@ -144,7 +144,9 @@
     <ClCompile Include="src\core\Registry.cpp" />
     <ClCompile Include="src\game\Game.cpp" />
     <ClCompile Include="src\helpers\Logger.cpp" />
+    <ClCompile Include="src\helpers\Timer.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Component.h" />
@@ -174,7 +176,9 @@
     <ClInclude Include="src\core\Registry.h" />
     <ClInclude Include="src\components\TransformComponent.h" />
     <ClInclude Include="src\game\Game.h" />
+    <ClInclude Include="src\helpers\LevelLoader.h" />
     <ClInclude Include="src\helpers\Logger.h" />
+    <ClInclude Include="src\helpers\Timer.h" />
     <ClInclude Include="src\systems\AnimationSystem.h" />
     <ClInclude Include="src\systems\CameraMovementSystem.h" />
     <ClInclude Include="src\systems\CollisionSystem.h" />
@@ -187,6 +191,7 @@
     <ClInclude Include="src\systems\RenderHealthBarSystem.h" />
     <ClInclude Include="src\systems\RenderSystem.h" />
     <ClInclude Include="src\systems\RenderTextSystem.h" />
+    <ClInclude Include="src\window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace re
+namespace re::utils
 {
 	enum class LogType
 	{

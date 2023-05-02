@@ -6,7 +6,7 @@
 
 #pragma warning(disable:4996)
 
-namespace re
+namespace re::utils
 {
 	std::vector<LogEntry> Logger::m_logMessages;
 

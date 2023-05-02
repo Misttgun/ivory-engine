@@ -1,4 +1,5 @@
-- Add Window class to handle all the window init and input polling
+- Look into why the game accelerates after a breakpoint (GetTick() might be the culprit)
+- Seperate engine code from game code
 - Add an observer patern in place of eventbus
 - Add an Input handler like in Unity or Raylib
 - Implement custom allocator for memory management instead of using smart pointers

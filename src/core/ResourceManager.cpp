@@ -17,7 +17,7 @@ namespace re
 
 		m_textures.emplace(assetId, texture);
 
-		Logger::Log("New texture added to the Asset Store with id= " + assetId);
+		utils::Logger::Log("New texture added to the Asset Store with id= " + assetId);
 	}
 
 	SDL_Texture* ResourceManager::GetTexture(const std::string& assetId) const
@@ -30,7 +30,7 @@ namespace re
 		TTF_Font* font = TTF_OpenFont(path.c_str(), fontSize);
 		m_fonts.emplace(assetId, font);
 
-		Logger::Log("New font added to the Asset Store with id= " + assetId);
+		utils::Logger::Log("New font added to the Asset Store with id= " + assetId);
 	}
 
 	TTF_Font* ResourceManager::GetFont(const std::string& assetId) const

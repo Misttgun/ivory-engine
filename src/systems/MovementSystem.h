@@ -25,8 +25,8 @@ namespace re
 
 				transform.m_position += rigidBody.m_velocity * deltaTime;
 
-				const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(Game::m_mapWidth) ||
-					transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(Game::m_mapHeight);
+				const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(utils::Level::m_mapWidth) ||
+					transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(utils::Level::m_mapHeight);
 
 				if (isEntityOutsideMap)
 				{
@@ -38,8 +38,8 @@ namespace re
 					else
 					{
 						auto position = transform.m_position;
-						position.x = glm::clamp(position.x, 0.0f, static_cast<float>(Game::m_mapWidth));
-						position.y = glm::clamp(position.y, 0.0f, static_cast<float>(Game::m_mapHeight));
+						position.x = glm::clamp(position.x, 0.0f, static_cast<float>(utils::Level::m_mapWidth));
+						position.y = glm::clamp(position.y, 0.0f, static_cast<float>(utils::Level::m_mapHeight));
 						transform.m_position = position;
 					}
 				}
