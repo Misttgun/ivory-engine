@@ -1,25 +1,30 @@
 #pragma once
 
 #include "../components/ProjectileComponent.h"
-#include "../ecs/ECS.h"
+#include "../core/System.h"
 
-class ProjectileLifecycleSystem : public System
+namespace re
 {
-public:
-	ProjectileLifecycleSystem()
-	{
-		RequireComponent<ProjectileComponent>();
-	}
+	extern Registry registry;
 
-	void Update(const float deltaTime) const
+	class ProjectileLifecycleSystem : public System
 	{
-		for (auto entity : GetEntities())
+	public:
+		ProjectileLifecycleSystem()
 		{
-			auto& projectile = entity.GetComponent<ProjectileComponent>();
-
-			projectile.m_durationTimer += deltaTime;
-			if(projectile.m_durationTimer >= projectile.m_duration)
-				entity.Destroy();
+			RequireComponent<ProjectileComponent>();
 		}
-	}
-};
+
+		void Update(const float deltaTime) const
+		{
+			for (const auto entity : GetEntities())
+			{
+				auto& projectile = registry.GetComponent<ProjectileComponent>(entity);
+
+				projectile.m_durationTimer += deltaTime;
+				if (projectile.m_durationTimer >= projectile.m_duration)
+					registry.DestroyEntity(entity);
+			}
+		}
+	};
+}

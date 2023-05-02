@@ -2,12 +2,15 @@
 
 #include <glm/glm.hpp>
 
-struct RigidBodyComponent
+namespace re
 {
-    glm::vec2 m_velocity;
+	struct RigidBodyComponent
+	{
+		glm::vec2 m_velocity;
 
-    RigidBodyComponent() = default;
+		RigidBodyComponent() = default;
 
-    explicit RigidBodyComponent(const glm::vec2 velocity) : m_velocity(velocity)
-    {}
-};
+		explicit RigidBodyComponent(const glm::vec2 velocity) : m_velocity(velocity)
+		{}
+	};
+}

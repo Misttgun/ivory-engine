@@ -24,18 +24,21 @@
     <ClCompile Include="src\helpers\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ecs\ECS.cpp">
+    <ClCompile Include="src\core\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\helpers\AssetStore.cpp">
+    <ClCompile Include="src\core\ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\helpers\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\helpers\Logger.h">
@@ -47,7 +50,7 @@
     <ClInclude Include="src\systems\MovementSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ecs\ECS.h">
+    <ClInclude Include="src\core\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\components\RigidBodyComponent.h">
@@ -59,7 +62,7 @@
     <ClInclude Include="src\systems\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\helpers\AssetStore.h">
+    <ClInclude Include="src\core\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\components\AnimationComponent.h">
@@ -143,8 +146,21 @@
     <ClInclude Include="src\events\DestroyEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\ComponentPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\scripts\myscript.lua" />
+    <None Include="Readme.md" />
   </ItemGroup>
 </Project>

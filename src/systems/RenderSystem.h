@@ -1,71 +1,77 @@
 #pragma once
 
 #include <algorithm>
+
 #include "../components/SpriteComponent.h"
-#include "../ecs/ECS.h"
-#include "../helpers/AssetStore.h"
+#include "../core/ResourceManager.h"
+#include "../core/System.h"
 
-class RenderSystem : public System
+namespace re
 {
-public:
-	RenderSystem()
+	extern Registry registry;
+
+	class RenderSystem : public System
 	{
-		RequireComponent<TransformComponent>();
-		RequireComponent<SpriteComponent>();
-	}
-
-	void Draw(SDL_Renderer* renderer, const std::unique_ptr<AssetStore>& assetStore, const SDL_Rect& camera) const
-	{
-		struct RenderableEntity
+	public:
+		RenderSystem()
 		{
-			TransformComponent m_transform{};
-			SpriteComponent m_sprite;
-		};
-
-		// Sorting entities by Z Index. Higher Z index get drawn on top of lower Z Index.
-		const auto entities = GetEntities();
-		std::vector<RenderableEntity> visibleEntities;
-
-		for (auto entity : entities)
-		{
-			RenderableEntity rEntity;
-			rEntity.m_transform = entity.GetComponent<TransformComponent>();
-			rEntity.m_sprite = entity.GetComponent<SpriteComponent>();
-
-			const auto position = rEntity.m_transform.m_position;
-			const auto scale = rEntity.m_transform.m_scale;
-			const auto sprite = rEntity.m_sprite;
-
-			bool isOutsideCameraView = (position.x + (scale.x * static_cast<float>(sprite.m_width)) < static_cast<float>(camera.x) 
-			   || position.x > static_cast<float>(camera.x + camera.w) 
-			   || position.y + (scale.y * static_cast<float>(sprite.m_height)) < static_cast<float>(camera.y) 
-			   || position.y > static_cast<float>(camera.y + camera.h));
-
-			if(isOutsideCameraView && sprite.m_isFixed == false)
-				continue;
-
-			visibleEntities.push_back(rEntity);
+			RequireComponent<TransformComponent>();
+			RequireComponent<SpriteComponent>();
 		}
 
-		std::ranges::sort(visibleEntities, [](const RenderableEntity& a, const RenderableEntity& b)
+		void Draw(SDL_Renderer* renderer, const std::unique_ptr<ResourceManager>& assetStore, const SDL_Rect& camera) const
 		{
-			return a.m_sprite.m_zIndex < b.m_sprite.m_zIndex;
-		});
-
-
-		for(const auto& [transform, sprite] : visibleEntities)
-		{
-			SDL_Rect srcRect = sprite.m_srcRect;
-
-			SDL_Rect dstRect = {
-				static_cast<int>(transform.m_position.x - (sprite.m_isFixed ? 0 : static_cast<float>(camera.x))),
-				static_cast<int>(transform.m_position.y - (sprite.m_isFixed ? 0 : static_cast<float>(camera.y))),
-				sprite.m_width * static_cast<int>(transform.m_scale.x),
-				sprite.m_height * static_cast<int>(transform.m_scale.y)
+			struct RenderableEntity
+			{
+				TransformComponent m_transform;
+				SpriteComponent m_sprite;
 			};
 
-			auto texture = assetStore->GetTexture(sprite.m_assetId);
-			SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, transform.m_rotation, nullptr, sprite.m_flip);
+			// Sorting entities by Z Index. Higher Z index get drawn on top of lower Z Index.
+			const auto entities = GetEntities();
+			std::vector<RenderableEntity> visibleEntities;
+
+			for (auto entity : entities)
+			{
+				RenderableEntity rEntity;
+				rEntity.m_transform = registry.GetComponent<TransformComponent>(entity);
+				rEntity.m_sprite = registry.GetComponent<SpriteComponent>(entity);
+
+				const auto position = rEntity.m_transform.m_position;
+				const auto scale = rEntity.m_transform.m_scale;
+				const auto sprite = rEntity.m_sprite;
+
+				bool isOutsideCameraView = (position.x + (scale.x * static_cast<float>(sprite.m_width)) < static_cast<float>(camera.x)
+					|| position.x > static_cast<float>(camera.x + camera.w)
+					|| position.y + (scale.y * static_cast<float>(sprite.m_height)) < static_cast<float>(camera.y)
+					|| position.y > static_cast<float>(camera.y + camera.h));
+
+				if (isOutsideCameraView && sprite.m_isFixed == false)
+					continue;
+
+				visibleEntities.push_back(rEntity);
+			}
+
+			std::ranges::sort(visibleEntities, [](const RenderableEntity& a, const RenderableEntity& b)
+				{
+					return a.m_sprite.m_zIndex < b.m_sprite.m_zIndex;
+				});
+
+
+			for (const auto& [transform, sprite] : visibleEntities)
+			{
+				SDL_Rect srcRect = sprite.m_srcRect;
+
+				SDL_Rect dstRect = {
+					static_cast<int>(transform.m_position.x - (sprite.m_isFixed ? 0 : static_cast<float>(camera.x))),
+					static_cast<int>(transform.m_position.y - (sprite.m_isFixed ? 0 : static_cast<float>(camera.y))),
+					sprite.m_width * static_cast<int>(transform.m_scale.x),
+					sprite.m_height * static_cast<int>(transform.m_scale.y)
+				};
+
+				auto texture = assetStore->GetTexture(sprite.m_assetId);
+				SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, transform.m_rotation, nullptr, sprite.m_flip);
+			}
 		}
-	}
-};
+	};
+}

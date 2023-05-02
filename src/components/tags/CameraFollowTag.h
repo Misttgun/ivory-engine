@@ -1,6 +1,9 @@
 #pragma once
 
-struct CameraFollowTag
+namespace re
+{
+	struct CameraFollowTag
 {
 	CameraFollowTag() = default;
 };
+}

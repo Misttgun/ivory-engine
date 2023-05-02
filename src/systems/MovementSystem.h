@@ -3,87 +3,92 @@
 #include "../components/RigidBodyComponent.h"
 #include "../components/TransformComponent.h"
 #include "../components/tags/ObstacleTag.h"
-#include "../ecs/ECS.h"
+#include "../core/System.h"
 
-class MovementSystem : public System
+namespace re
 {
-public:
-	MovementSystem()
-	{
-		RequireComponent<TransformComponent>();
-		RequireComponent<RigidBodyComponent>();
-	}
+	extern Registry registry;
 
-	void Update(const float deltaTime) const
+	class MovementSystem : public System
 	{
-
-		for(auto entity : GetEntities())
+	public:
+		MovementSystem()
 		{
-			auto& transform = entity.GetComponent<TransformComponent>();
-			const auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
+			RequireComponent<TransformComponent>();
+			RequireComponent<RigidBodyComponent>();
+		}
 
-			transform.m_position += rigidBody.m_velocity * deltaTime;
+		void Update(const float deltaTime) const
+		{
 
-			const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(Game::m_mapWidth)
-				|| transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(Game::m_mapHeight);
-
-			if(isEntityOutsideMap)
+			for (const auto entity : GetEntities())
 			{
-				// Kill all enemies that get outside of the map boundaries
-				if(entity.HasComponent<PlayerTag>() == false)
+				auto& transform = registry.GetComponent<TransformComponent>(entity);
+				const auto& rigidBody = registry.GetComponent<RigidBodyComponent>(entity);
+
+				transform.m_position += rigidBody.m_velocity * deltaTime;
+
+				const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(Game::m_mapWidth)
+					|| transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(Game::m_mapHeight);
+
+				if (isEntityOutsideMap)
 				{
-					entity.Destroy();
-				}
-				else
-				{
-					auto position = transform.m_position;
-					position.x = glm::clamp(position.x, 0.0f, static_cast<float>(Game::m_mapWidth));
-					position.y = glm::clamp(position.y, 0.0f, static_cast<float>(Game::m_mapHeight));
-					transform.m_position = position;
+					// Kill all enemies that get outside of the map boundaries
+					if (registry.HasComponent<PlayerTag>(entity) == false)
+					{
+						registry.DestroyEntity(entity);
+					}
+					else
+					{
+						auto position = transform.m_position;
+						position.x = glm::clamp(position.x, 0.0f, static_cast<float>(Game::m_mapWidth));
+						position.y = glm::clamp(position.y, 0.0f, static_cast<float>(Game::m_mapHeight));
+						transform.m_position = position;
+					}
 				}
 			}
 		}
-	}
 
-	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
-	{
-		eventBus->SubscribeToEvent<CollisionEvent>(this, &MovementSystem::OnCollision);
-	}
-
-private:
-	void OnCollision(const CollisionEvent& event)
-	{
-		const Entity a = event.m_entityA;
-		const Entity b = event.m_entityB;
-
-		if(a.HasComponent<EnemyTag>() && b.HasComponent<ObstacleTag>())
+		void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
 		{
-			OnEnemyHitsObstacle(a);
-		}
-		else if(a.HasComponent<ObstacleTag>() && b.HasComponent<EnemyTag>())
-		{
-			OnEnemyHitsObstacle(b);
-		}
-	}
-
-	static void OnEnemyHitsObstacle(const Entity enemy)
-	{
-		if(enemy.HasComponent<RigidBodyComponent>() == false || enemy.HasComponent<SpriteComponent>() == false)
-			return;
-
-		auto& rigidBody = enemy.GetComponent<RigidBodyComponent>();
-		auto& sprite = enemy.GetComponent<SpriteComponent>();
-
-		if(glm::abs(rigidBody.m_velocity.x - 0) > 0.001f)
-		{
-			rigidBody.m_velocity.x *= -1;
-			sprite.m_flip = sprite.m_flip == SDL_FLIP_NONE ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+			eventBus->SubscribeToEvent<CollisionEvent>(this, &MovementSystem::OnCollision);
 		}
 
-		if(glm::abs(rigidBody.m_velocity.y - 0) > 0.001f)
+	private:
+		void OnCollision(const CollisionEvent& event)
 		{
-			rigidBody.m_velocity.y *= -1;
-			sprite.m_flip = sprite.m_flip == SDL_FLIP_NONE ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+			const Entity a = event.m_entityA;
+			const Entity b = event.m_entityB;
+
+			if (registry.HasComponent<EnemyTag>(a) && registry.HasComponent<ObstacleTag>(b))
+			{
+				OnEnemyHitsObstacle(a);
+			}
+			else if (registry.HasComponent<ObstacleTag>(a) && registry.HasComponent<EnemyTag>(b))
+			{
+				OnEnemyHitsObstacle(b);
+			}
 		}
-	}
-};
+
+		static void OnEnemyHitsObstacle(const Entity enemy)
+		{
+			if (registry.HasComponent<RigidBodyComponent>(enemy) == false || registry.HasComponent<SpriteComponent>(enemy) == false)
+				return;
+
+			auto& rigidBody = registry.GetComponent<RigidBodyComponent>(enemy);
+			auto& sprite = registry.GetComponent<SpriteComponent>(enemy);
+
+			if (glm::abs(rigidBody.m_velocity.x - 0) > 0.001f)
+			{
+				rigidBody.m_velocity.x *= -1;
+				sprite.m_flip = sprite.m_flip == SDL_FLIP_NONE ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+			}
+
+			if (glm::abs(rigidBody.m_velocity.y - 0) > 0.001f)
+			{
+				rigidBody.m_velocity.y *= -1;
+				sprite.m_flip = sprite.m_flip == SDL_FLIP_NONE ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+			}
+		}
+	};
+}

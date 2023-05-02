@@ -1,6 +1,9 @@
 #pragma once
 
-struct ProjectileTag
+namespace re
 {
-	ProjectileTag() = default;
-};
+	struct ProjectileTag
+	{
+		ProjectileTag() = default;
+	};
+}

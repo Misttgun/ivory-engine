@@ -2,58 +2,61 @@
 
 #include <glm/vec2.hpp>
 
-struct BoxColliderComponent
+namespace re
 {
-	glm::vec2 m_size;
-	glm::vec2 m_offset;
-	SDL_Color m_debugColor{};
-	std::vector<int> m_collidingIds;
-
-	BoxColliderComponent() = default;
-
-	explicit BoxColliderComponent(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0)) : m_size(size), m_offset(offset)
+	struct BoxColliderComponent
 	{
-		m_debugColor = {255, 255, 0, 255};
-	}
+		glm::vec2 m_size;
+		glm::vec2 m_offset;
+		SDL_Color m_debugColor{};
+		std::vector<Entity> m_collidingEntities;
 
-	void AddCollidingEntity(const int entityId)
-	{
-		if(IsCollidingWithEntity(entityId))
-			return;
+		BoxColliderComponent() = default;
 
-		m_collidingIds.push_back(entityId);
-	}
-
-	[[nodiscard]] bool IsCollidingWithEntity(const int entityId) const
-	{
-		return std::ranges::find(m_collidingIds, entityId) != m_collidingIds.end();
-	}
-
-	[[nodiscard]] bool IsCollidingWithAnyEntity() const
-	{
-		return !m_collidingIds.empty();
-	}
-
-	void RemoveCollidingEntity(const int entityId)
-	{
-		int index = -1;
-		for (std::size_t i = 0; i < m_collidingIds.size(); ++i)
+		explicit BoxColliderComponent(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0)) : m_size(size), m_offset(offset)
 		{
-			if(m_collidingIds.at(i) == entityId)
-			{
-				index = static_cast<int>(i);
-				break;
-			}
+			m_debugColor = { 255, 255, 0, 255 };
 		}
 
-		if(index == -1)
-			return;
+		void AddCollidingEntity(const Entity entity)
+		{
+			if (IsCollidingWithEntity(entity))
+				return;
 
-		m_collidingIds.erase(m_collidingIds.begin() + index);
-	}
+			m_collidingEntities.push_back(entity);
+		}
 
-	void ClearCollisionData()
-	{
-		m_collidingIds.clear();
-	}
-};
+		[[nodiscard]] bool IsCollidingWithEntity(const Entity entity) const
+		{
+			return std::ranges::find(m_collidingEntities, entity) != m_collidingEntities.end();
+		}
+
+		[[nodiscard]] bool IsCollidingWithAnyEntity() const
+		{
+			return !m_collidingEntities.empty();
+		}
+
+		void RemoveCollidingEntity(const Entity entity)
+		{
+			int32 index = -1;
+			for (std::size_t i = 0; i < m_collidingEntities.size(); ++i)
+			{
+				if (m_collidingEntities.at(i) == entity)
+				{
+					index = static_cast<int>(i);
+					break;
+				}
+			}
+
+			if (index == -1)
+				return;
+
+			m_collidingEntities.erase(m_collidingEntities.begin() + index);
+		}
+
+		void ClearCollisionData()
+		{
+			m_collidingEntities.clear();
+		}
+	};
+}

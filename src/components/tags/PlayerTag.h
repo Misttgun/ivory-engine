@@ -1,6 +1,9 @@
 #pragma once
 
-struct PlayerTag
+namespace re
 {
-	PlayerTag() = default;
-};
+	struct PlayerTag
+	{
+		PlayerTag() = default;
+	};
+}

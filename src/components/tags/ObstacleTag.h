@@ -1,5 +1,9 @@
 #pragma once
-struct ObstacleTag
+
+namespace re
 {
-	ObstacleTag() = default;
-};
+	struct ObstacleTag
+	{
+		ObstacleTag() = default;
+	};
+}

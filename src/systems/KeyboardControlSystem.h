@@ -1,42 +1,46 @@
 #pragma once
 
 #include "../components/KeyboardControlComponent.h"
-#include "../ecs/ECS.h"
+#include "../core/System.h"
 #include "../events/KeyPressedEvent.h"
 
-class EventBus;
-
-class KeyboardControlSystem : public System
+namespace re
 {
-public:
-	KeyboardControlSystem()
-	{
-		RequireComponent<KeyboardControlComponent>();
-		RequireComponent<RigidBodyComponent>();
-		RequireComponent<SpriteComponent>();
-	}
+	extern Registry registry;
 
-	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
-	{
-		eventBus->SubscribeToEvent<KeyPressedEvent>(this, &KeyboardControlSystem::OnKeyPressed);
-	}
+	class EventBus;
 
-	void Update()
+	class KeyboardControlSystem : public System
 	{
-
-	}
-
-private:
-	void OnKeyPressed(const KeyPressedEvent& event)
-	{
-		for(auto entity : GetEntities())
+	public:
+		KeyboardControlSystem()
 		{
-			const auto& keyboard = entity.GetComponent<KeyboardControlComponent>();
-			auto& sprite = entity.GetComponent<SpriteComponent>();
-			auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
+			RequireComponent<KeyboardControlComponent>();
+			RequireComponent<RigidBodyComponent>();
+			RequireComponent<SpriteComponent>();
+		}
 
-			switch(event.m_symbol)
+		void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
+		{
+			eventBus->SubscribeToEvent<KeyPressedEvent>(this, &KeyboardControlSystem::OnKeyPressed);
+		}
+
+		void Update()
+		{
+
+		}
+
+	private:
+		void OnKeyPressed(const KeyPressedEvent& event)
+		{
+			for (const auto entity : GetEntities())
 			{
+				const auto& keyboard = registry.GetComponent<KeyboardControlComponent>(entity);
+				auto& sprite = registry.GetComponent<SpriteComponent>(entity);
+				auto& rigidBody = registry.GetComponent<RigidBodyComponent>(entity);
+
+				switch (event.m_symbol)
+				{
 				case SDLK_UP:
 				case SDLK_z:
 					rigidBody.m_velocity = keyboard.m_up;
@@ -57,8 +61,9 @@ private:
 					rigidBody.m_velocity = keyboard.m_left;
 					sprite.m_srcRect.y = sprite.m_height * 3;
 					break;
-				default: ;
+				default:;
+				}
 			}
 		}
-	}
-};
+	};
+}

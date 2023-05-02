@@ -1,6 +1,9 @@
 #pragma once
 
-struct EnemyTag
+namespace re
+{
+	struct EnemyTag
 {
 	EnemyTag() = default;
 };
+}

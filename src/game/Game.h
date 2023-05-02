@@ -2,43 +2,56 @@
 
 #include <memory>
 #include <SDL2/SDL.h>
-#include "../ecs/ECS.h"
+
+#include "../core/ResourceManager.h"
+#include "../core/Types.h"
 #include "../events/EventBus.h"
-#include "../helpers/AssetStore.h"
 
-class Game
+namespace re
 {
-private:
-	SDL_Window* m_window;
-	SDL_Renderer* m_renderer;
-	SDL_Rect m_camera;
+	class Game
+	{
+	public:
+		Game();
+		~Game() = default;
+		Game(const Game& game) = delete;
+		Game(Game&& game) = delete;
+		Game& operator=(const Game& game) = delete;
+		Game& operator=(Game&& game) = delete;
 
-	std::unique_ptr<Registry> m_registry;
-	std::unique_ptr<AssetStore> m_assetStore;
-	std::shared_ptr<EventBus> m_eventBus;
+		void Init();
+		void Run();
+		void Destroy() const;
 
-	bool m_isRunning;
-	bool m_isDebug;
+	private:
+		void LoadLevel(int level) const;
+		void Setup() const;
+		void ProcessInputs();
+		void Update();
+		void Render() const;
 
-	int m_previousFrameTime;
 
-	void LoadLevel(int level) const;
-	void Setup() const;
-	void ProcessInputs();
-	void Update();
-	void Render() const;
+	public:
+		static int32 m_windowWidth;
+		static int32 m_windowHeight;
+		static int32 m_mapWidth;
+		static int32 m_mapHeight;
 
-public:
-	Game();
-	~Game() = default;
+	private:
+		SDL_Window* m_window;
+		SDL_Renderer* m_renderer;
+		SDL_Rect m_camera;
 
-	void Init();
-	void Run();
-	void Destroy() const;
+		//std::unique_ptr<Registry> m_registry;
+		std::unique_ptr<ResourceManager> m_resourceManager;
+		std::shared_ptr<EventBus> m_eventBus;
 
-	static int m_windowWidth;
-	static int m_windowHeight;
-	static int m_mapWidth;
-	static int m_mapHeight;
-};
+		bool m_isRunning;
+		bool m_isDebug;
+
+		uint32 m_previousFrameTime;
+		float m_accumulator;
+
+	};
+}
 

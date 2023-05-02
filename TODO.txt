@@ -1,4 +1,7 @@
-- Create a readme where I document the game engine, so I can jump back easily after a hiatus
+- Clean up the existing code
+- Add Window class to handle all the window init and input polling
+- Add an observer patern in place of eventbus
+- Add an Input handler like in Unity or Raylib
 - Implement custom allocator for memory management instead of using smart pointers
 - Implement UI framework
 - Take a look at sounds

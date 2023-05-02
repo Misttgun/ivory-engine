@@ -1,6 +1,10 @@
 #pragma once
 
-class Event {
-    public:
-        Event() = default;
-};
+namespace re
+{
+	class Event
+	{
+	public:
+		Event() = default;
+	};
+}

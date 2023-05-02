@@ -2,14 +2,17 @@
 
 #include <glm/glm.hpp>
 
-struct TransformComponent
+namespace re
 {
-    glm::vec2 m_position;
-    glm::vec2 m_scale;
-    double m_rotation;
+	struct TransformComponent
+	{
+		glm::vec2 m_position;
+		glm::vec2 m_scale;
+		double m_rotation;
 
-    TransformComponent() = default;
+		TransformComponent() = default;
 
-    explicit TransformComponent(const glm::vec2 position, const glm::vec2 scale, const double rotation) : m_position(position), m_scale(scale), m_rotation(rotation)
-    {}
-};
+		explicit TransformComponent(const glm::vec2 position, const glm::vec2 scale = glm::vec2(1), const double rotation = 0) : m_position(position), m_scale(scale), m_rotation(rotation)
+		{}
+	};
+}

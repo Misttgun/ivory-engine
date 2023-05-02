@@ -1,18 +1,21 @@
 #pragma once
 
-struct AnimationComponent
+namespace re
 {
-	int m_frames;
-	int m_currentFrame;
-	int m_speed;
-	bool m_shouldLoop;
-	float m_frameTime;
-
-	AnimationComponent() = default;
-
-	explicit AnimationComponent(const int frames, const int speed, const bool shouldLoop) : m_frames(frames), m_speed(speed), m_shouldLoop(shouldLoop)
+	struct AnimationComponent
 	{
-		m_currentFrame = 1;
-		m_frameTime = 0.0f;
-	}
-};
+		int32 m_frames;
+		int32 m_currentFrame;
+		int32 m_speed;
+		bool m_shouldLoop;
+		float m_frameTime;
+
+		AnimationComponent() = default;
+
+		explicit AnimationComponent(const int32 frames, const int32 speed, const bool shouldLoop) : m_frames(frames), m_speed(speed), m_shouldLoop(shouldLoop)
+		{
+			m_currentFrame = 1;
+			m_frameTime = 0.0f;
+		}
+	};
+}

@@ -3,63 +3,64 @@
 #include "../components/BoxColliderComponent.h"
 #include "../components/ProjectileComponent.h"
 #include "../components/tags/ProjectileTag.h"
-#include "../ecs/ECS.h"
+#include "../core/System.h"
 #include "../events/CollisionEvent.h"
 #include "../events/EventBus.h"
 
-class EventBus;
-
-class DamageSystem : public System
+namespace re
 {
-public:
-	DamageSystem()
-	{
-		RequireComponent<BoxColliderComponent>();
-	}
+	extern Registry registry;
 
-	void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
+	class DamageSystem : public System
 	{
-		eventBus->SubscribeToEvent<CollisionEvent>(this, &DamageSystem::OnCollision);
-	}
-
-private:
-	void OnCollision(const CollisionEvent& event)
-	{
-		const Entity a = event.m_entityA;
-		const Entity b = event.m_entityB;
-
-		if(a.HasComponent<ProjectileTag>() && b.HasComponent<PlayerTag>())
+	public:
+		DamageSystem()
 		{
-			OnProjectileHitsEntity(a, b, false);
-		}
-		else if(a.HasComponent<PlayerTag>() && b.HasComponent<ProjectileTag>())
-		{
-			OnProjectileHitsEntity(b, a, false);
-		}
-		else if(a.HasComponent<ProjectileTag>() && b.HasComponent<EnemyTag>())
-		{
-			OnProjectileHitsEntity(a, b, true);
-		}
-		else if(a.HasComponent<EnemyTag>() && b.HasComponent<ProjectileTag>())
-		{
-			OnProjectileHitsEntity(b, a, true);
+			RequireComponent<BoxColliderComponent>();
 		}
 
-		//Logger::Log("Collision detected between entity id: " + std::to_string(a.GetId()) + " and entity id: " + std::to_string(b.GetId()));
-	}
+		void SubscribeToEvent(const std::shared_ptr<EventBus>& eventBus)
+		{
+			eventBus->SubscribeToEvent<CollisionEvent>(this, &DamageSystem::OnCollision);
+		}
 
-	static void OnProjectileHitsEntity(const Entity projectile, const Entity entity, const bool isProjectileFriendly)
-	{
-		const auto& projectileComp = projectile.GetComponent<ProjectileComponent>();
-		if(projectileComp.m_isFriendly != isProjectileFriendly)
-			return;
+	private:
+		void OnCollision(const CollisionEvent& event)
+		{
+			const Entity a = event.m_entityA;
+			const Entity b = event.m_entityB;
 
-		auto& heathComp = entity.GetComponent<HealthComponent>();
-		heathComp.m_currentHealth -= projectileComp.m_damage;
+			if (registry.HasComponent<ProjectileTag>(a) && registry.HasComponent<PlayerTag>(b))
+			{
+				OnProjectileHitsEntity(a, b, false);
+			}
+			else if (registry.HasComponent<PlayerTag>(a) && registry.HasComponent<ProjectileTag>(b))
+			{
+				OnProjectileHitsEntity(b, a, false);
+			}
+			else if (registry.HasComponent<ProjectileTag>(a) && registry.HasComponent<EnemyTag>(b))
+			{
+				OnProjectileHitsEntity(a, b, true);
+			}
+			else if (registry.HasComponent<EnemyTag>(a) && registry.HasComponent<ProjectileTag>(b))
+			{
+				OnProjectileHitsEntity(b, a, true);
+			}
+		}
 
-		if(heathComp.m_currentHealth <= 0)
-			entity.Destroy();
+		static void OnProjectileHitsEntity(const Entity projectile, const Entity entity, const bool isProjectileFriendly)
+		{
+			const auto& projectileComp = registry.GetComponent<ProjectileComponent>(projectile);
+			if (projectileComp.m_isFriendly != isProjectileFriendly)
+				return;
 
-		projectile.Destroy();
-	}
-};
+			auto& heathComp = registry.GetComponent<HealthComponent>(entity);
+			heathComp.m_currentHealth -= projectileComp.m_damage;
+
+			if (heathComp.m_currentHealth <= 0)
+				registry.DestroyEntity(entity);
+
+			registry.DestroyEntity(projectile);
+		}
+	};
+}
