@@ -2,12 +2,10 @@
 
 #include "../components/AnimationComponent.h"
 #include "../components/SpriteComponent.h"
-#include "../core/System.h"
+#include "../core/Registry.h"
 
 namespace re
 {
-	extern Registry registry;
-
 	class AnimationSystem : public System
 	{
 	public:
@@ -19,10 +17,10 @@ namespace re
 
 		void Update(const float deltaTime) const
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				auto& sprite = registry.GetComponent<SpriteComponent>(entity);
-				auto& animation = registry.GetComponent<AnimationComponent>(entity);
+				auto& sprite = m_registry->GetComponent<SpriteComponent>(entity);
+				auto& animation = m_registry->GetComponent<AnimationComponent>(entity);
 
 				animation.m_frameTime += deltaTime * static_cast<float>(animation.m_speed);
 				animation.m_currentFrame = static_cast<int>(animation.m_frameTime) % animation.m_frames;
@@ -31,4 +29,3 @@ namespace re
 		}
 	};
 }
-

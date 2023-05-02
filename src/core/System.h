@@ -6,6 +6,8 @@
 
 namespace re
 {
+	class Registry;
+
 	class System
 	{
 	public:
@@ -13,13 +15,18 @@ namespace re
 
 		void AddEntity(Entity entity);
 		void RemoveEntity(Entity entity);
-		[[nodiscard]] std::set<Entity> GetEntities() const;
 		[[nodiscard]] const Signature& GetSignature() const;
 
-		template <typename T> void RequireComponent();
+		void SetRegistry(Registry* registry);
+
+		template <typename T>
+		void RequireComponent();
 
 	private:
 		Signature m_signature;
+
+	protected:
+		Registry* m_registry{};
 		std::set<Entity> m_entities;
 	};
 

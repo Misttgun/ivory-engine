@@ -9,7 +9,6 @@ namespace re
 	public:
 		Entity m_destroyedEntity;
 
-		explicit DestroyEvent(const Entity destroyedEntity) : m_destroyedEntity(destroyedEntity)
-		{}
+		explicit DestroyEvent(const Entity destroyedEntity) : m_destroyedEntity(destroyedEntity) { }
 	};
 }

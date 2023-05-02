@@ -3,12 +3,14 @@
 #include <memory>
 #include <SDL2/SDL.h>
 
+#include "../core/Registry.h"
 #include "../core/ResourceManager.h"
-#include "../core/Types.h"
 #include "../events/EventBus.h"
 
 namespace re
 {
+	class Registry;
+
 	class Game
 	{
 	public:
@@ -24,12 +26,11 @@ namespace re
 		void Destroy() const;
 
 	private:
-		void LoadLevel(int level) const;
+		void LoadLevel(int32 level) const;
 		void Setup() const;
 		void ProcessInputs();
 		void Update();
 		void Render() const;
-
 
 	public:
 		static int32 m_windowWidth;
@@ -42,7 +43,7 @@ namespace re
 		SDL_Renderer* m_renderer;
 		SDL_Rect m_camera;
 
-		//std::unique_ptr<Registry> m_registry;
+		std::unique_ptr<Registry> m_registry;
 		std::unique_ptr<ResourceManager> m_resourceManager;
 		std::shared_ptr<EventBus> m_eventBus;
 
@@ -51,7 +52,5 @@ namespace re
 
 		uint32 m_previousFrameTime;
 		float m_accumulator;
-
 	};
 }
-

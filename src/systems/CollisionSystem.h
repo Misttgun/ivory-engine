@@ -4,14 +4,12 @@
 
 #include "../components/BoxColliderComponent.h"
 #include "../components/TransformComponent.h"
-#include "../core/System.h"
+#include "../core/Registry.h"
 #include "../events/CollisionEvent.h"
 #include "../events/DestroyEvent.h"
 
 namespace re
 {
-	extern Registry registry;
-
 	class CollisionSystem : public System
 	{
 	public:
@@ -28,24 +26,24 @@ namespace re
 
 		void Update(const std::shared_ptr<EventBus>& eventBus) const
 		{
-			const auto entities = GetEntities();
+			const auto entities = m_entities;
 
 			for (auto entityA = entities.begin(); entityA != entities.end(); ++entityA)
 			{
 				const auto a = *entityA;
-				auto& aTransform = registry.GetComponent<TransformComponent>(a);
-				auto& aCollider = registry.GetComponent<BoxColliderComponent>(a);
+				auto& aTransform = m_registry->GetComponent<TransformComponent>(a);
+				auto& aCollider = m_registry->GetComponent<BoxColliderComponent>(a);
 
 				auto entityB = entityA;
-				std::advance(entityB,  1); // Set entityB iterator to 
+				std::advance(entityB, 1); // Set entityB iterator to 
 				for (; entityB != entities.end(); ++entityB)
 				{
 					const auto b = *entityB;
-					auto& bTransform = registry.GetComponent<TransformComponent>(b);
-					auto& bCollider = registry.GetComponent<BoxColliderComponent>(b);
+					auto& bTransform = m_registry->GetComponent<TransformComponent>(b);
+					auto& bCollider = m_registry->GetComponent<BoxColliderComponent>(b);
 
 					const bool isColliding = CheckAABBCollision(aTransform.m_position + aCollider.m_offset, aCollider.m_size * aTransform.m_scale,
-						bTransform.m_position + bCollider.m_offset, bCollider.m_size * bTransform.m_scale);
+					                                            bTransform.m_position + bCollider.m_offset, bCollider.m_size * bTransform.m_scale);
 
 					if (isColliding)
 					{
@@ -64,18 +62,18 @@ namespace re
 				}
 
 				if (aCollider.IsCollidingWithAnyEntity())
-					aCollider.m_debugColor = { 255, 0, 0, 255 };
+					aCollider.m_debugColor = {255, 0, 0, 255};
 				else
-					aCollider.m_debugColor = { 255, 255, 0, 255 };
+					aCollider.m_debugColor = {255, 255, 0, 255};
 			}
 		}
 
 		void Draw(SDL_Renderer* renderer, const SDL_Rect& camera) const
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				const auto& transform = registry.GetComponent<TransformComponent>(entity);
-				const auto& collider = registry.GetComponent<BoxColliderComponent>(entity);
+				const auto& transform = m_registry->GetComponent<TransformComponent>(entity);
+				const auto& collider = m_registry->GetComponent<BoxColliderComponent>(entity);
 				SDL_Rect boundingBox = {
 					static_cast<int>(transform.m_position.x + collider.m_offset.x - camera.x),
 					static_cast<int>(transform.m_position.y + collider.m_offset.y - camera.y),
@@ -98,9 +96,9 @@ namespace re
 		{
 			const auto destroyedEntity = event.m_destroyedEntity;
 
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				auto& collider = registry.GetComponent<BoxColliderComponent>(entity);
+				auto& collider = m_registry->GetComponent<BoxColliderComponent>(entity);
 				collider.RemoveCollidingEntity(destroyedEntity);
 			}
 		}

@@ -12,7 +12,6 @@ namespace re
 
 		TransformComponent() = default;
 
-		explicit TransformComponent(const glm::vec2 position, const glm::vec2 scale = glm::vec2(1), const double rotation = 0) : m_position(position), m_scale(scale), m_rotation(rotation)
-		{}
+		explicit TransformComponent(const glm::vec2 position, const glm::vec2 scale = glm::vec2(1), const double rotation = 0) : m_position(position), m_scale(scale), m_rotation(rotation) { }
 	};
 }

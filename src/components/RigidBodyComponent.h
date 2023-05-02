@@ -10,7 +10,6 @@ namespace re
 
 		RigidBodyComponent() = default;
 
-		explicit RigidBodyComponent(const glm::vec2 velocity) : m_velocity(velocity)
-		{}
+		explicit RigidBodyComponent(const glm::vec2 velocity) : m_velocity(velocity) { }
 	};
 }

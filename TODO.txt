@@ -1,4 +1,3 @@
-- Clean up the existing code
 - Add Window class to handle all the window init and input polling
 - Add an observer patern in place of eventbus
 - Add an Input handler like in Unity or Raylib

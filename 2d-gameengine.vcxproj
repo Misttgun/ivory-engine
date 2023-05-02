@@ -189,7 +189,6 @@
     <ClInclude Include="src\systems\RenderTextSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\scripts\myscript.lua" />
     <None Include="Readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

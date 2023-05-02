@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <fstream>
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdl.h>
 #include <imgui_impl_sdlrenderer.h>
 #include <iostream>
 #include "../components/AnimationComponent.h"
@@ -14,7 +14,6 @@
 #include "../components/tags/EnemyTag.h"
 #include "../components/tags/ObstacleTag.h"
 #include "../components/tags/PlayerTag.h"
-#include "../core/Registry.h"
 #include "../helpers/Logger.h"
 #include "../systems/AnimationSystem.h"
 #include "../systems/CameraMovementSystem.h"
@@ -31,35 +30,33 @@
 
 namespace re
 {
-	Registry registry;
-
-	int Game::m_windowWidth = 0;
-	int Game::m_windowHeight = 0;
-	int Game::m_mapWidth = 0;
-	int Game::m_mapHeight = 0;
+	int32 Game::m_windowWidth = 0;
+	int32 Game::m_windowHeight = 0;
+	int32 Game::m_mapWidth = 0;
+	int32 Game::m_mapHeight = 0;
 
 	Game::Game() : m_window{}, m_renderer{}, m_camera{}, m_isRunning(false), m_isDebug(false), m_previousFrameTime(0), m_accumulator(0)
 	{
 		m_eventBus = std::make_shared<EventBus>();
-		registry.Init(m_eventBus);
-		//m_registry = std::make_unique<Registry>(m_eventBus);
+		m_registry = std::make_unique<Registry>();
+		m_registry->Init(m_eventBus);
 		m_resourceManager = std::make_unique<ResourceManager>();
 	}
 
-	void Game::LoadLevel(int level) const
+	void Game::LoadLevel(const int32 level) const
 	{
-		registry.RegisterSystem<MovementSystem>();
-		registry.RegisterSystem<RenderSystem>();
-		registry.RegisterSystem<AnimationSystem>();
-		registry.RegisterSystem<CollisionSystem>();
-		registry.RegisterSystem<DamageSystem>();
-		registry.RegisterSystem<KeyboardControlSystem>();
-		registry.RegisterSystem<CameraMovementSystem>();
-		registry.RegisterSystem<ProjectileEmitSystem>();
-		registry.RegisterSystem<ProjectileLifecycleSystem>();
-		registry.RegisterSystem<RenderTextSystem>();
-		registry.RegisterSystem<RenderHealthBarSystem>();
-		registry.RegisterSystem<RenderGUISystem>();
+		m_registry->RegisterSystem<MovementSystem>();
+		m_registry->RegisterSystem<RenderSystem>();
+		m_registry->RegisterSystem<AnimationSystem>();
+		m_registry->RegisterSystem<CollisionSystem>();
+		m_registry->RegisterSystem<DamageSystem>();
+		m_registry->RegisterSystem<KeyboardControlSystem>();
+		m_registry->RegisterSystem<CameraMovementSystem>();
+		m_registry->RegisterSystem<ProjectileEmitSystem>();
+		m_registry->RegisterSystem<ProjectileLifecycleSystem>();
+		m_registry->RegisterSystem<RenderTextSystem>();
+		m_registry->RegisterSystem<RenderHealthBarSystem>();
+		m_registry->RegisterSystem<RenderGUISystem>();
 
 		m_resourceManager->AddTexture("tank_image_right", "./assets/images/tank-panther-right.png", m_renderer);
 		m_resourceManager->AddTexture("truck_image_right", "./assets/images/truck-ford-right.png", m_renderer);
@@ -93,66 +90,66 @@ namespace re
 				const int32 srcRectX = std::atoi(&ch) * tileSize;
 				mapFile.ignore();
 
-				const Entity tile = registry.CreateEntity();
-				registry.AddComponent(tile, TransformComponent{ glm::vec2(x * (tileScale * tileSize), y * (tileScale * tileSize)), glm::vec2(tileScale, tileScale), 0.0 });
-				registry.AddComponent(tile, SpriteComponent{ "tilemap-image", tileSize, tileSize, 0, false, srcRectX, srcRectY });
+				const Entity tile = m_registry->CreateEntity();
+				m_registry->AddComponent(tile, TransformComponent{glm::vec2(x * (tileScale * tileSize), y * (tileScale * tileSize)), glm::vec2(tileScale, tileScale), 0.0});
+				m_registry->AddComponent(tile, SpriteComponent{"tilemap-image", tileSize, tileSize, 0, false, srcRectX, srcRectY});
 			}
 		}
 
 		mapFile.close();
-		m_mapWidth = static_cast<int>(mapNumCols * tileSize * tileScale);
-		m_mapHeight = static_cast<int>(mapNumRows * tileSize * tileScale);
+		m_mapWidth = static_cast<int32>(mapNumCols * tileSize * tileScale);
+		m_mapHeight = static_cast<int32>(mapNumRows * tileSize * tileScale);
 
-		const Entity chopper = registry.CreateEntity();
-		registry.AddComponent(chopper, CameraFollowTag{});
-		registry.AddComponent(chopper, PlayerTag{});
-		registry.AddComponent(chopper, TransformComponent{ glm::vec2(240, 110) });
-		registry.AddComponent(chopper, RigidBodyComponent{ glm::vec2(0, 0) });
-		registry.AddComponent(chopper, SpriteComponent{ "chopper-image", 32, 32, 2 });
-		registry.AddComponent(chopper, AnimationComponent{ 2, 15, true });
-		registry.AddComponent(chopper, BoxColliderComponent{ glm::vec2(32, 25), glm::vec2(0, 5) });
-		registry.AddComponent(chopper, KeyboardControlComponent{ glm::vec2(0, -50), glm::vec2(50, 0), glm::vec2(0, 50), glm::vec2(-50, 0) });
-		registry.AddComponent(chopper, ProjectileEmitterComponent{ glm::vec2(150), 0, 10, 20, true });
-		registry.AddComponent(chopper, HealthComponent{ 100 });
+		const Entity chopper = m_registry->CreateEntity();
+		m_registry->AddComponent(chopper, CameraFollowTag{});
+		m_registry->AddComponent(chopper, PlayerTag{});
+		m_registry->AddComponent(chopper, TransformComponent{glm::vec2(240, 110)});
+		m_registry->AddComponent(chopper, RigidBodyComponent{glm::vec2(0, 0)});
+		m_registry->AddComponent(chopper, SpriteComponent{"chopper-image", 32, 32, 2});
+		m_registry->AddComponent(chopper, AnimationComponent{2, 15, true});
+		m_registry->AddComponent(chopper, BoxColliderComponent{glm::vec2(32, 25), glm::vec2(0, 5)});
+		m_registry->AddComponent(chopper, KeyboardControlComponent{glm::vec2(0, -50), glm::vec2(50, 0), glm::vec2(0, 50), glm::vec2(-50, 0)});
+		m_registry->AddComponent(chopper, ProjectileEmitterComponent{glm::vec2(150), 0, 10, 20, true});
+		m_registry->AddComponent(chopper, HealthComponent{100});
 
-		const Entity radar = registry.CreateEntity();
-		registry.AddComponent(radar, TransformComponent{ glm::vec2(static_cast<float>(m_windowWidth) - 74.0f, 10), glm::vec2(1, 1), 0 });
-		registry.AddComponent(radar, RigidBodyComponent{ glm::vec2(0, 0) });
-		registry.AddComponent(radar, SpriteComponent{ "radar-image", 64, 64, 10, true });
-		registry.AddComponent(radar, AnimationComponent{ 8, 5, true });
+		const Entity radar = m_registry->CreateEntity();
+		m_registry->AddComponent(radar, TransformComponent{glm::vec2(static_cast<float>(m_windowWidth) - 74.0f, 10), glm::vec2(1, 1), 0});
+		m_registry->AddComponent(radar, RigidBodyComponent{glm::vec2(0, 0)});
+		m_registry->AddComponent(radar, SpriteComponent{"radar-image", 64, 64, 10, true});
+		m_registry->AddComponent(radar, AnimationComponent{8, 5, true});
 
-		const Entity tank = registry.CreateEntity();
-		registry.AddComponent(tank, EnemyTag{});
-		registry.AddComponent(tank, TransformComponent{ glm::vec2(500) });
-		registry.AddComponent(tank, RigidBodyComponent{ glm::vec2(20, 0) });
-		registry.AddComponent(tank, SpriteComponent{ "tank_image_right", 32, 32, 1 });
-		registry.AddComponent(tank, BoxColliderComponent{ glm::vec2(25, 18), glm::vec2(5, 7) });
-		registry.AddComponent(tank, HealthComponent{ 50 });
+		const Entity tank = m_registry->CreateEntity();
+		m_registry->AddComponent(tank, EnemyTag{});
+		m_registry->AddComponent(tank, TransformComponent{glm::vec2(500)});
+		m_registry->AddComponent(tank, RigidBodyComponent{glm::vec2(20, 0)});
+		m_registry->AddComponent(tank, SpriteComponent{"tank_image_right", 32, 32, 1});
+		m_registry->AddComponent(tank, BoxColliderComponent{glm::vec2(25, 18), glm::vec2(5, 7)});
+		m_registry->AddComponent(tank, HealthComponent{50});
 
-		const Entity truck = registry.CreateEntity();
-		registry.AddComponent(truck, EnemyTag{});
-		registry.AddComponent(truck, TransformComponent{ glm::vec2(120,500) });
-		registry.AddComponent(truck, RigidBodyComponent{ glm::vec2(0) });
-		registry.AddComponent(truck, SpriteComponent{ "truck_image_right", 32, 32, 1 });
-		registry.AddComponent(truck, BoxColliderComponent{ glm::vec2(25, 20), glm::vec2(5, 7) });
-		registry.AddComponent(truck, ProjectileEmitterComponent{ glm::vec2(100, 0), 2 });
-		registry.AddComponent(truck, HealthComponent{ 50 });
+		const Entity truck = m_registry->CreateEntity();
+		m_registry->AddComponent(truck, EnemyTag{});
+		m_registry->AddComponent(truck, TransformComponent{glm::vec2(120, 500)});
+		m_registry->AddComponent(truck, RigidBodyComponent{glm::vec2(0)});
+		m_registry->AddComponent(truck, SpriteComponent{"truck_image_right", 32, 32, 1});
+		m_registry->AddComponent(truck, BoxColliderComponent{glm::vec2(25, 20), glm::vec2(5, 7)});
+		m_registry->AddComponent(truck, ProjectileEmitterComponent{glm::vec2(100, 0), 2});
+		m_registry->AddComponent(truck, HealthComponent{50});
 
-		const Entity treeA = registry.CreateEntity();
-		registry.AddComponent(treeA, ObstacleTag{});
-		registry.AddComponent(treeA, TransformComponent{ glm::vec2(600, 495), glm::vec2(1, 1), 0 });
-		registry.AddComponent(treeA, SpriteComponent{ "tree-image", 16, 32, 1 });
-		registry.AddComponent(treeA, BoxColliderComponent{ glm::vec2(16, 32) });
+		const Entity treeA = m_registry->CreateEntity();
+		m_registry->AddComponent(treeA, ObstacleTag{});
+		m_registry->AddComponent(treeA, TransformComponent{glm::vec2(600, 495), glm::vec2(1, 1), 0});
+		m_registry->AddComponent(treeA, SpriteComponent{"tree-image", 16, 32, 1});
+		m_registry->AddComponent(treeA, BoxColliderComponent{glm::vec2(16, 32)});
 
-		const Entity treeB = registry.CreateEntity();
-		registry.AddComponent(treeB, ObstacleTag{});
-		registry.AddComponent(treeB, TransformComponent{ glm::vec2(400, 495), glm::vec2(1, 1), 0 });
-		registry.AddComponent(treeB, SpriteComponent{ "tree-image", 16, 32, 1 });
-		registry.AddComponent(treeB, BoxColliderComponent{ glm::vec2(16, 32) });
+		const Entity treeB = m_registry->CreateEntity();
+		m_registry->AddComponent(treeB, ObstacleTag{});
+		m_registry->AddComponent(treeB, TransformComponent{glm::vec2(400, 495), glm::vec2(1, 1), 0});
+		m_registry->AddComponent(treeB, SpriteComponent{"tree-image", 16, 32, 1});
+		m_registry->AddComponent(treeB, BoxColliderComponent{glm::vec2(16, 32)});
 
-		const Entity label = registry.CreateEntity();
-		constexpr SDL_Color green = { 0, 255, 0, 255 };
-		registry.AddComponent(label, TextLabelComponent{ glm::vec2(m_windowWidth / 2 - 40, 10), "CHOPPER 1.0", "charriot-font", green, true });
+		const Entity label = m_registry->CreateEntity();
+		constexpr SDL_Color green = {0, 255, 0, 255};
+		m_registry->AddComponent(label, TextLabelComponent{glm::vec2(m_windowWidth / 2 - 40, 10), "CHOPPER 1.0", "charriot-font", green, true});
 	}
 
 	void Game::Setup() const
@@ -217,20 +214,20 @@ namespace re
 
 		m_eventBus->Reset();
 
-		registry.GetSystem<DamageSystem>().SubscribeToEvent(m_eventBus);
-		registry.GetSystem<KeyboardControlSystem>().SubscribeToEvent(m_eventBus);
-		registry.GetSystem<ProjectileEmitSystem>().SubscribeToEvent(m_eventBus);
-		registry.GetSystem<MovementSystem>().SubscribeToEvent(m_eventBus);
-		registry.GetSystem<CollisionSystem>().SubscribeToEvent(m_eventBus);
+		m_registry->GetSystem<DamageSystem>().SubscribeToEvent(m_eventBus);
+		m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvent(m_eventBus);
+		m_registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvent(m_eventBus);
+		m_registry->GetSystem<MovementSystem>().SubscribeToEvent(m_eventBus);
+		m_registry->GetSystem<CollisionSystem>().SubscribeToEvent(m_eventBus);
 
-		registry.Update();
+		m_registry->Update();
 
-		registry.GetSystem<MovementSystem>().Update(deltaTime);
-		registry.GetSystem<AnimationSystem>().Update(deltaTime);
-		registry.GetSystem<CollisionSystem>().Update(m_eventBus);
-		registry.GetSystem<CameraMovementSystem>().Update(m_camera);
-		registry.GetSystem<ProjectileEmitSystem>().Update(deltaTime);
-		registry.GetSystem<ProjectileLifecycleSystem>().Update(deltaTime);
+		m_registry->GetSystem<MovementSystem>().Update(deltaTime);
+		m_registry->GetSystem<AnimationSystem>().Update(deltaTime);
+		m_registry->GetSystem<CollisionSystem>().Update(m_eventBus);
+		m_registry->GetSystem<CameraMovementSystem>().Update(m_camera);
+		m_registry->GetSystem<ProjectileEmitSystem>().Update(deltaTime);
+		m_registry->GetSystem<ProjectileLifecycleSystem>().Update(deltaTime);
 	}
 
 	void Game::Render() const
@@ -238,14 +235,14 @@ namespace re
 		SDL_SetRenderDrawColor(m_renderer, 21, 21, 21, 255);
 		SDL_RenderClear(m_renderer);
 
-		registry.GetSystem<RenderSystem>().Draw(m_renderer, m_resourceManager, m_camera);
-		registry.GetSystem<RenderTextSystem>().Draw(m_renderer, m_resourceManager, m_camera);
-		registry.GetSystem<RenderHealthBarSystem>().Draw(m_renderer, m_resourceManager, m_camera);
+		m_registry->GetSystem<RenderSystem>().Draw(m_renderer, m_resourceManager, m_camera);
+		m_registry->GetSystem<RenderTextSystem>().Draw(m_renderer, m_resourceManager, m_camera);
+		m_registry->GetSystem<RenderHealthBarSystem>().Draw(m_renderer, m_resourceManager, m_camera);
 
 		if (m_isDebug)
 		{
-			registry.GetSystem<RenderGUISystem>().Draw();
-			registry.GetSystem<CollisionSystem>().Draw(m_renderer, m_camera);
+			m_registry->GetSystem<RenderGUISystem>().Draw();
+			m_registry->GetSystem<CollisionSystem>().Draw(m_renderer, m_camera);
 
 			ImGui::Render();
 			ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -321,7 +318,6 @@ namespace re
 		ImGui_ImplSDLRenderer_Shutdown();
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
-
 
 		SDL_DestroyRenderer(m_renderer);
 		SDL_DestroyWindow(m_window);

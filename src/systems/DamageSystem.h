@@ -3,14 +3,12 @@
 #include "../components/BoxColliderComponent.h"
 #include "../components/ProjectileComponent.h"
 #include "../components/tags/ProjectileTag.h"
-#include "../core/System.h"
+#include "../core/Registry.h"
 #include "../events/CollisionEvent.h"
 #include "../events/EventBus.h"
 
 namespace re
 {
-	extern Registry registry;
-
 	class DamageSystem : public System
 	{
 	public:
@@ -30,37 +28,37 @@ namespace re
 			const Entity a = event.m_entityA;
 			const Entity b = event.m_entityB;
 
-			if (registry.HasComponent<ProjectileTag>(a) && registry.HasComponent<PlayerTag>(b))
+			if (m_registry->HasComponent<ProjectileTag>(a) && m_registry->HasComponent<PlayerTag>(b))
 			{
 				OnProjectileHitsEntity(a, b, false);
 			}
-			else if (registry.HasComponent<PlayerTag>(a) && registry.HasComponent<ProjectileTag>(b))
+			else if (m_registry->HasComponent<PlayerTag>(a) && m_registry->HasComponent<ProjectileTag>(b))
 			{
 				OnProjectileHitsEntity(b, a, false);
 			}
-			else if (registry.HasComponent<ProjectileTag>(a) && registry.HasComponent<EnemyTag>(b))
+			else if (m_registry->HasComponent<ProjectileTag>(a) && m_registry->HasComponent<EnemyTag>(b))
 			{
 				OnProjectileHitsEntity(a, b, true);
 			}
-			else if (registry.HasComponent<EnemyTag>(a) && registry.HasComponent<ProjectileTag>(b))
+			else if (m_registry->HasComponent<EnemyTag>(a) && m_registry->HasComponent<ProjectileTag>(b))
 			{
 				OnProjectileHitsEntity(b, a, true);
 			}
 		}
 
-		static void OnProjectileHitsEntity(const Entity projectile, const Entity entity, const bool isProjectileFriendly)
+		void OnProjectileHitsEntity(const Entity projectile, const Entity entity, const bool isProjectileFriendly) const
 		{
-			const auto& projectileComp = registry.GetComponent<ProjectileComponent>(projectile);
+			const auto& projectileComp = m_registry->GetComponent<ProjectileComponent>(projectile);
 			if (projectileComp.m_isFriendly != isProjectileFriendly)
 				return;
 
-			auto& heathComp = registry.GetComponent<HealthComponent>(entity);
+			auto& heathComp = m_registry->GetComponent<HealthComponent>(entity);
 			heathComp.m_currentHealth -= projectileComp.m_damage;
 
 			if (heathComp.m_currentHealth <= 0)
-				registry.DestroyEntity(entity);
+				m_registry->DestroyEntity(entity);
 
-			registry.DestroyEntity(projectile);
+			m_registry->DestroyEntity(projectile);
 		}
 	};
 }

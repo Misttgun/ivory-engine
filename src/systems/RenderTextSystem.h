@@ -7,8 +7,6 @@
 
 namespace re
 {
-	extern Registry registry;
-
 	class RenderTextSystem : public System
 	{
 	public:
@@ -19,9 +17,9 @@ namespace re
 
 		void Draw(SDL_Renderer* renderer, const std::unique_ptr<ResourceManager>& assetStore, const SDL_Rect& camera) const
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				const auto textLabel = registry.GetComponent<TextLabelComponent>(entity);
+				const auto textLabel = m_registry->GetComponent<TextLabelComponent>(entity);
 
 				SDL_Surface* surface = TTF_RenderText_Blended(assetStore->GetFont(textLabel.m_assetId), textLabel.m_text.c_str(), textLabel.m_color);
 				SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -33,8 +31,8 @@ namespace re
 				SDL_QueryTexture(texture, nullptr, nullptr, &labelWidth, &labelHeight);
 
 				SDL_Rect dstRect = {
-					static_cast<int>(textLabel.m_position.x) - (textLabel.m_isFixed ? 0 : camera.x),
-					static_cast<int>(textLabel.m_position.y) - (textLabel.m_isFixed ? 0 : camera.y),
+					static_cast<int32>(textLabel.m_position.x) - (textLabel.m_isFixed ? 0 : camera.x),
+					static_cast<int32>(textLabel.m_position.y) - (textLabel.m_isFixed ? 0 : camera.y),
 					labelWidth,
 					labelHeight
 				};

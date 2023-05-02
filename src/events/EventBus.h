@@ -23,10 +23,10 @@ namespace re
 	};
 
 	template <typename TOwner, typename TEvent>
-	class EventCallback : public IEventCallback
+	class EventCallback final : public IEventCallback
 	{
 	private:
-		typedef void (TOwner::* CallbackFunction)(const TEvent&);
+		typedef void (TOwner::*CallbackFunction)(const TEvent&);
 
 		TOwner* m_ownerInstance;
 		CallbackFunction m_callbackFunction;
@@ -37,8 +37,7 @@ namespace re
 		}
 
 	public:
-		EventCallback(TOwner* ownerInstance, const CallbackFunction callbackFunction) : m_ownerInstance(ownerInstance), m_callbackFunction(callbackFunction)
-		{}
+		EventCallback(TOwner* ownerInstance, const CallbackFunction callbackFunction) : m_ownerInstance(ownerInstance), m_callbackFunction(callbackFunction) { }
 
 		~EventCallback() override = default;
 	};
@@ -52,6 +51,7 @@ namespace re
 
 	public:
 		EventBus() = default;
+
 		~EventBus()
 		{
 			Reset();
@@ -68,7 +68,7 @@ namespace re
 		// Example: eventBus->SubscribeToEvent<CollisionEvent>(this, &Game::onCollision);
 		/////////////////////////////////////////////////////////////////////// 
 		template <typename TEvent, typename TOwner>
-		void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::* callbackFunction)(const TEvent&))
+		void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::*callbackFunction)(const TEvent&))
 		{
 			if (!m_subscribers[typeid(TEvent)].get())
 			{
@@ -84,8 +84,8 @@ namespace re
 		// event we go ahead and execute all the listener callback functions
 		// Example: eventBus->EmitEvent<CollisionEvent>(player, enemy);
 		/////////////////////////////////////////////////////////////////////// 
-		template <typename TEvent, typename ...TArgs>
-		void EmitEvent(TArgs&& ...args)
+		template <typename TEvent, typename... TArgs>
+		void EmitEvent(TArgs&&... args)
 		{
 			const auto handlers = m_subscribers[typeid(TEvent)].get();
 			if (handlers)

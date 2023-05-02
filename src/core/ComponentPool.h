@@ -16,7 +16,7 @@ namespace re
 		IComponentPool& operator=(const IComponentPool& pool) = delete;
 		IComponentPool& operator=(IComponentPool&& pool) = delete;
 
-		virtual void RemoveEntityFromPool(uint32 entityId) = 0;
+		virtual void RemoveEntityFromPool(Entity entity) = 0;
 
 	protected:
 		IComponentPool() = default;
@@ -28,24 +28,24 @@ namespace re
 	public:
 		ComponentPool() = default;
 
-		void Add(const uint32 entityId, T component)
+		void Add(const Entity entity, T component)
 		{
-			SDL_assert(m_entityIdToIndex.contains(entityId) == false && "Component added to same entity more than once.");
+			SDL_assert(m_entityIdToIndex.contains(entity) == false && "Component added to same entity more than once.");
 
 			// Put new entry at end
 			size_t index = m_size;
-			m_entityIdToIndex.emplace(entityId, index);
-			m_indexToEntityId.emplace(index, entityId);
+			m_entityIdToIndex.emplace(entity, index);
+			m_indexToEntityId.emplace(index, entity);
 			m_componentArray[index] = component;
 			++m_size;
 		}
 
-		void Remove(const uint32 entityId)
+		void Remove(const Entity entity)
 		{
-			SDL_assert(m_entityIdToIndex.contains(entityId) && "Removing non-existent component.");
+			SDL_assert(m_entityIdToIndex.contains(entity) && "Removing non-existent component.");
 
 			// Copy element at end into deleted element's place to maintain density
-			const auto indexOfRemoved = m_entityIdToIndex.at(entityId);
+			const auto indexOfRemoved = m_entityIdToIndex.at(entity);
 			const auto indexOfLast = m_size - 1;
 			m_componentArray[indexOfRemoved] = m_componentArray[indexOfLast];
 
@@ -53,26 +53,26 @@ namespace re
 			const auto entityIdOfLastElement = m_indexToEntityId.at(indexOfLast);
 			m_entityIdToIndex[entityIdOfLastElement] = indexOfRemoved;
 			m_indexToEntityId[indexOfRemoved] = entityIdOfLastElement;
-
-			m_entityIdToIndex.erase(entityId);
+			m_entityIdToIndex.erase(entity);
 			m_indexToEntityId.erase(indexOfLast);
 
 			m_size--;
 		}
 
-		T& Get(const uint32 entityId)
+		T& Get(const Entity entity)
 		{
-			SDL_assert(m_entityIdToIndex.contains(entityId) && "Retrieving non-existent component.");
+			SDL_assert(m_entityIdToIndex.contains(entity) && "Retrieving non-existent component.");
 
-			const auto index = m_entityIdToIndex.at(entityId);
+			const auto index = m_entityIdToIndex.at(entity);
 			return m_componentArray[index];
 		}
 
-		void RemoveEntityFromPool(const uint32 entityId) override
+		void RemoveEntityFromPool(const Entity entity) override
 		{
-			SDL_assert(m_entityIdToIndex.contains(entityId) && "Retrieving non-existent component.");
+			if (m_entityIdToIndex.contains(entity) == false)
+				return;
 
-			Remove(entityId);
+			Remove(entity);
 		}
 
 	private:

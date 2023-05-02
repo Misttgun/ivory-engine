@@ -15,7 +15,7 @@ typedef uint64_t uint64;
 namespace re
 {
 	// GLOBALS
-	constexpr uint8 FPS = 120;
+	constexpr uint8 FPS = 60;
 	constexpr uint8 FUZZY_FPS = FPS + 2;
 	constexpr float TIME_PER_FRAME_MS = 1000.0f / FPS;
 	constexpr float DELTA_TIME_S = 1.0f / FPS;
@@ -27,5 +27,4 @@ namespace re
 	using ComponentType = uint8;
 	constexpr ComponentType MAX_COMPONENTS = 32;
 	using Signature = std::bitset<MAX_COMPONENTS>;
-
 }

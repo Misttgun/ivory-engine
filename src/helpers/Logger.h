@@ -14,8 +14,8 @@ namespace re
 
 	struct LogEntry
 	{
-		LogType type;
-		std::string message;
+		LogType m_type;
+		std::string m_message;
 	};
 
 	class Logger

@@ -6,8 +6,6 @@
 
 namespace re
 {
-	extern Registry registry;
-
 	class EventBus;
 
 	class KeyboardControlSystem : public System
@@ -25,19 +23,16 @@ namespace re
 			eventBus->SubscribeToEvent<KeyPressedEvent>(this, &KeyboardControlSystem::OnKeyPressed);
 		}
 
-		void Update()
-		{
-
-		}
+		void Update() { }
 
 	private:
 		void OnKeyPressed(const KeyPressedEvent& event)
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				const auto& keyboard = registry.GetComponent<KeyboardControlComponent>(entity);
-				auto& sprite = registry.GetComponent<SpriteComponent>(entity);
-				auto& rigidBody = registry.GetComponent<RigidBodyComponent>(entity);
+				const auto& keyboard = m_registry->GetComponent<KeyboardControlComponent>(entity);
+				auto& sprite = m_registry->GetComponent<SpriteComponent>(entity);
+				auto& rigidBody = m_registry->GetComponent<RigidBodyComponent>(entity);
 
 				switch (event.m_symbol)
 				{
@@ -61,7 +56,7 @@ namespace re
 					rigidBody.m_velocity = keyboard.m_left;
 					sprite.m_srcRect.y = sprite.m_height * 3;
 					break;
-				default:;
+				default: ;
 				}
 			}
 		}

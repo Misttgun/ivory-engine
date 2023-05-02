@@ -1,14 +1,10 @@
 #pragma once
 
 #include "../components/tags/CameraFollowTag.h"
-#include "../core/System.h"
+#include "../core/Registry.h"
 
 namespace re
 {
-	extern Registry registry;
-
-	struct RigidBodyComponent;
-
 	class CameraMovementSystem : public System
 	{
 	public:
@@ -20,9 +16,9 @@ namespace re
 
 		void Update(SDL_Rect& camera) const
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				const auto& transform = registry.GetComponent<TransformComponent>(entity);
+				const auto& transform = m_registry->GetComponent<TransformComponent>(entity);
 
 				camera.x = glm::clamp(static_cast<int>(transform.m_position.x - camera.w / 2.0f), 0, Game::m_mapWidth - camera.w);
 				camera.y = glm::clamp(static_cast<int>(transform.m_position.y - camera.h / 2.0f), 0, Game::m_mapHeight - camera.h);

@@ -28,7 +28,5 @@ namespace re
 	private:
 		std::unordered_map<std::string, SDL_Texture*> m_textures;
 		std::unordered_map<std::string, TTF_Font*> m_fonts;
-
 	};
 }
-

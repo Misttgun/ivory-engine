@@ -12,13 +12,13 @@ namespace re
 		m_entities.erase(entity);
 	}
 
-	std::set<Entity> System::GetEntities() const
-	{
-		return m_entities;
-	}
-
 	const Signature& System::GetSignature() const
 	{
 		return m_signature;
+	}
+
+	void System::SetRegistry(Registry* registry)
+	{
+		m_registry = registry;
 	}
 }

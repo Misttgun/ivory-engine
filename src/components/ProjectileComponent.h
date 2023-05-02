@@ -11,7 +11,7 @@ namespace re
 
 		ProjectileComponent() = default;
 
-		ProjectileComponent(const bool isFriendly, const int32 damage, const float duration) : m_isFriendly(isFriendly), m_damage(damage), m_duration(duration)
+		explicit ProjectileComponent(const bool isFriendly, const int32 damage, const float duration) : m_isFriendly(isFriendly), m_damage(damage), m_duration(duration)
 		{
 			m_durationTimer = 0;
 		}

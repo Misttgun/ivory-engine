@@ -39,7 +39,7 @@ namespace re
 		tm newtTime{};
 		[[maybe_unused]] errno_t success = localtime_s(&newtTime, &now);
 
-		[[maybe_unused]] size_t length = std::strftime(output.data(),  output.size(), "%d-%m-%Y %H:%M:%S", &newtTime);
+		[[maybe_unused]] size_t length = std::strftime(output.data(), output.size(), "%d-%m-%Y %H:%M:%S", &newtTime);
 
 		return output;
 	}

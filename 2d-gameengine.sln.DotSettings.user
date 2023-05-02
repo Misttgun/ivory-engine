@@ -5,6 +5,13 @@
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/BracesInForStatement/@EntryValue">RequiredForMultiline</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/BracesInIfStatement/@EntryValue">NotRequiredForBoth</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/BracesInWhileStatement/@EntryValue">RequiredForMultiline</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/ALIGN_MULTILINE_EXPRESSION_BRACES/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/EMPTY_BLOCK_STYLE/@EntryValue">TOGETHER_SAME_LINE</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INT_ALIGN_ENUM_INITIALIZERS/@EntryValue">True</s:Boolean>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/KEEP_BLANK_LINES_IN_CODE/@EntryValue">1</s:Int64>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/KEEP_BLANK_LINES_IN_DECLARATIONS/@EntryValue">1</s:Int64>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/SIMPLE_BLOCK_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_LIMIT/@EntryValue">200</s:Int64>
 	<s:Boolean x:Key="/Default/CodeStyle/CppIncludeDirective/SortIncludeDirectives/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=AABB/@EntryIndexedValue">AABB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=SDL/@EntryIndexedValue">SDL</s:String>
@@ -83,6 +90,7 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=charriot/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Colliders/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=pico/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Renderable/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=spritesheet/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=tilemap/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=tilemaps/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -25,15 +25,29 @@ namespace re
 		Entity CreateEntity();
 		void DestroyEntity(Entity entity);
 
-		template <typename T> void AddComponent(Entity entity, T component);
-		template <typename T> void RemoveComponent(Entity entity);
-		template <typename T> [[nodiscard]] bool HasComponent(Entity entity) const;
-		template <typename T> T& GetComponent(Entity entity) const;
+		template <typename T>
+		void AddComponent(Entity entity, T component);
 
-		template <typename T> void RegisterSystem();
-		template <typename T> void RemoveSystem();
-		template <typename T> [[nodiscard]] bool HasSystem() const;
-		template <typename T> T& GetSystem() const;
+		template <typename T>
+		void RemoveComponent(Entity entity);
+
+		template <typename T>
+		[[nodiscard]] bool HasComponent(Entity entity) const;
+
+		template <typename T>
+		T& GetComponent(Entity entity) const;
+
+		template <typename T>
+		void RegisterSystem();
+
+		template <typename T>
+		void RemoveSystem();
+
+		template <typename T>
+		[[nodiscard]] bool HasSystem() const;
+
+		template <typename T>
+		T& GetSystem() const;
 
 		void AddEntityToSystems(Entity entity) const;
 		void RemoveEntityFromSystems(Entity entity) const;
@@ -47,7 +61,8 @@ namespace re
 		std::set<Entity> m_entitiesToDestroy;
 
 		std::queue<Entity> m_freeIds; // Queue of unused entity IDs
-		std::array<Signature, MAX_ENTITIES> m_entitySignatures; // Array of signatures where the index corresponds to the entity ID
+		std::array<Signature, MAX_ENTITIES> m_entitySignatures;
+		// Array of signatures where the index corresponds to the entity ID
 		uint32 m_entityCount{};
 
 		std::shared_ptr<EventBus> m_eventBus;
@@ -72,7 +87,7 @@ namespace re
 		EntitySignatureChanged(entity);
 	}
 
-	template<typename T>
+	template <typename T>
 	void Registry::RemoveComponent(const Entity entity)
 	{
 		const auto typeIndex = std::type_index(typeid(T));
@@ -108,7 +123,9 @@ namespace re
 
 		SDL_assert(m_systems.contains(typeIndex) == false && "Registering system more than once.");
 
-		m_systems.insert(std::make_pair(typeIndex, std::make_shared<T>()));
+		const std::shared_ptr<System> system = std::make_shared<T>();
+		system->SetRegistry(this);
+		m_systems.insert(std::make_pair(typeIndex, std::move(system)));
 	}
 
 	template <typename T>

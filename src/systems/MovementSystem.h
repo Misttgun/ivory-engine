@@ -3,12 +3,10 @@
 #include "../components/RigidBodyComponent.h"
 #include "../components/TransformComponent.h"
 #include "../components/tags/ObstacleTag.h"
-#include "../core/System.h"
+#include "../core/Registry.h"
 
 namespace re
 {
-	extern Registry registry;
-
 	class MovementSystem : public System
 	{
 	public:
@@ -20,23 +18,22 @@ namespace re
 
 		void Update(const float deltaTime) const
 		{
-
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				auto& transform = registry.GetComponent<TransformComponent>(entity);
-				const auto& rigidBody = registry.GetComponent<RigidBodyComponent>(entity);
+				auto& transform = m_registry->GetComponent<TransformComponent>(entity);
+				const auto& rigidBody = m_registry->GetComponent<RigidBodyComponent>(entity);
 
 				transform.m_position += rigidBody.m_velocity * deltaTime;
 
-				const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(Game::m_mapWidth)
-					|| transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(Game::m_mapHeight);
+				const bool isEntityOutsideMap = transform.m_position.x < 0 || transform.m_position.x > static_cast<float>(Game::m_mapWidth) ||
+					transform.m_position.y < 0 || transform.m_position.y > static_cast<float>(Game::m_mapHeight);
 
 				if (isEntityOutsideMap)
 				{
 					// Kill all enemies that get outside of the map boundaries
-					if (registry.HasComponent<PlayerTag>(entity) == false)
+					if (m_registry->HasComponent<PlayerTag>(entity) == false)
 					{
-						registry.DestroyEntity(entity);
+						m_registry->DestroyEntity(entity);
 					}
 					else
 					{
@@ -60,23 +57,23 @@ namespace re
 			const Entity a = event.m_entityA;
 			const Entity b = event.m_entityB;
 
-			if (registry.HasComponent<EnemyTag>(a) && registry.HasComponent<ObstacleTag>(b))
+			if (m_registry->HasComponent<EnemyTag>(a) && m_registry->HasComponent<ObstacleTag>(b))
 			{
 				OnEnemyHitsObstacle(a);
 			}
-			else if (registry.HasComponent<ObstacleTag>(a) && registry.HasComponent<EnemyTag>(b))
+			else if (m_registry->HasComponent<ObstacleTag>(a) && m_registry->HasComponent<EnemyTag>(b))
 			{
 				OnEnemyHitsObstacle(b);
 			}
 		}
 
-		static void OnEnemyHitsObstacle(const Entity enemy)
+		void OnEnemyHitsObstacle(const Entity enemy) const
 		{
-			if (registry.HasComponent<RigidBodyComponent>(enemy) == false || registry.HasComponent<SpriteComponent>(enemy) == false)
+			if (m_registry->HasComponent<RigidBodyComponent>(enemy) == false || m_registry->HasComponent<SpriteComponent>(enemy) == false)
 				return;
 
-			auto& rigidBody = registry.GetComponent<RigidBodyComponent>(enemy);
-			auto& sprite = registry.GetComponent<SpriteComponent>(enemy);
+			auto& rigidBody = m_registry->GetComponent<RigidBodyComponent>(enemy);
+			auto& sprite = m_registry->GetComponent<SpriteComponent>(enemy);
 
 			if (glm::abs(rigidBody.m_velocity.x - 0) > 0.001f)
 			{

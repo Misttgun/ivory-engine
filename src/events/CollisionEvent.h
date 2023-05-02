@@ -10,8 +10,6 @@ namespace re
 		Entity m_entityA;
 		Entity m_entityB;
 
-		CollisionEvent(const Entity a, const Entity b) : m_entityA(a), m_entityB(b)
-		{}
-
+		explicit CollisionEvent(const Entity a, const Entity b) : m_entityA(a), m_entityB(b) { }
 	};
 }

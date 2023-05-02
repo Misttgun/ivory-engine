@@ -5,8 +5,6 @@
 
 namespace re
 {
-	extern Registry registry;
-
 	class ProjectileLifecycleSystem : public System
 	{
 	public:
@@ -17,13 +15,13 @@ namespace re
 
 		void Update(const float deltaTime) const
 		{
-			for (const auto entity : GetEntities())
+			for (const auto entity : m_entities)
 			{
-				auto& projectile = registry.GetComponent<ProjectileComponent>(entity);
+				auto& projectile = m_registry->GetComponent<ProjectileComponent>(entity);
 
 				projectile.m_durationTimer += deltaTime;
 				if (projectile.m_durationTimer >= projectile.m_duration)
-					registry.DestroyEntity(entity);
+					m_registry->DestroyEntity(entity);
 			}
 		}
 	};

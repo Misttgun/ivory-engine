@@ -10,7 +10,6 @@ namespace re
 	public:
 		SDL_Keycode m_symbol;
 
-		explicit KeyPressedEvent(SDL_Keycode symbol) : m_symbol(symbol)
-		{}
+		explicit KeyPressedEvent(const SDL_Keycode symbol) : m_symbol(symbol) { }
 	};
 }
