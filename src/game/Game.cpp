@@ -2,20 +2,20 @@
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer.h>
-#include "../components/TextLabelComponent.h"
-#include "../helpers/LevelLoader.h"
-#include "../systems/AnimationSystem.h"
-#include "../systems/CameraMovementSystem.h"
-#include "../systems/CollisionSystem.h"
-#include "../systems/DamageSystem.h"
-#include "../systems/KeyboardControlSystem.h"
-#include "../systems/MovementSystem.h"
-#include "../systems/ProjectileEmitSystem.h"
-#include "../systems/ProjectileLifecycleSystem.h"
-#include "../systems/RenderGUISystem.h"
-#include "../systems/RenderHealthBarSystem.h"
-#include "../systems/RenderSystem.h"
-#include "../systems/RenderTextSystem.h"
+#include "../engine/components/TextLabelComponent.h"
+#include "../engine/systems/AnimationSystem.h"
+#include "../engine/systems/CollisionSystem.h"
+#include "../engine/systems/RenderSystem.h"
+#include "../engine/systems/RenderTextSystem.h"
+#include "helpers/LevelLoader.h"
+#include "systems/CameraMovementSystem.h"
+#include "systems/DamageSystem.h"
+#include "systems/KeyboardControlSystem.h"
+#include "systems/MovementSystem.h"
+#include "systems/ProjectileEmitSystem.h"
+#include "systems/ProjectileLifecycleSystem.h"
+#include "systems/RenderGUISystem.h"
+#include "systems/RenderHealthBarSystem.h"
 
 namespace re
 {
@@ -101,8 +101,14 @@ namespace re
 		constexpr float deltaTime = DELTA_TIME_S;
 
 		const auto currentFrameTime = SDL_GetTicks64();
-		const auto deltaMs = currentFrameTime - m_previousFrameTime;
+		auto deltaMs = currentFrameTime - m_previousFrameTime;
+
+		// Clamp deltaMS so we don't have weird behaviour when we hit a break point
+		if(deltaMs > static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS))
+			deltaMs = static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS);
+
 		m_previousFrameTime = currentFrameTime;
+
 		m_accumulator += static_cast<float>(deltaMs);
 
 		if (m_accumulator <= FUZZY_TIME_PER_FRAME_MS)
@@ -134,7 +140,7 @@ namespace re
 
 		if (m_updateTimer.ElapsedSeconds() > 1)
 		{
-			m_fps = "FPS: " + std::to_string(static_cast<double>(m_totalFrames) / m_fpsTimer.ElapsedSeconds());
+			m_fps = "FPS: " + std::to_string(static_cast<uint64>(static_cast<double>(m_totalFrames) / m_fpsTimer.ElapsedSeconds()));
 			auto& comp = m_registry->GetComponent<TextLabelComponent>(m_fpsCounter);
 			comp.m_text = m_fps;
 

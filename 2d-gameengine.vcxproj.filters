@@ -21,19 +21,25 @@
     <ClCompile Include="src\game\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\helpers\Logger.cpp">
+    <ClCompile Include="src\engine\helpers\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Registry.cpp">
+    <ClCompile Include="src\engine\core\ecs\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\ResourceManager.cpp">
+    <ClCompile Include="src\engine\core\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Component.cpp">
+    <ClCompile Include="src\engine\core\ecs\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\System.cpp">
+    <ClCompile Include="src\engine\core\ecs\System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\helpers\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,121 +47,130 @@
     <ClInclude Include="src\game\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\helpers\Logger.h">
+    <ClInclude Include="src\engine\helpers\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\TransformComponent.h">
+    <ClInclude Include="src\engine\components\TransformComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\MovementSystem.h">
+    <ClInclude Include="src\game\systems\MovementSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Registry.h">
+    <ClInclude Include="src\engine\core\ecs\Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\RigidBodyComponent.h">
+    <ClInclude Include="src\game\components\RigidBodyComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\SpriteComponent.h">
+    <ClInclude Include="src\engine\components\SpriteComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\RenderSystem.h">
+    <ClInclude Include="src\engine\systems\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\ResourceManager.h">
+    <ClInclude Include="src\engine\core\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\AnimationComponent.h">
+    <ClInclude Include="src\engine\components\AnimationComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\BoxColliderComponent.h">
+    <ClInclude Include="src\engine\components\BoxColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\AnimationSystem.h">
+    <ClInclude Include="src\engine\systems\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\CollisionSystem.h">
+    <ClInclude Include="src\engine\systems\CollisionSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\events\CollisionEvent.h">
+    <ClInclude Include="src\engine\events\CollisionEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\events\EventBus.h">
+    <ClInclude Include="src\engine\events\EventBus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\events\Event.h">
+    <ClInclude Include="src\engine\events\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\DamageSystem.h">
+    <ClInclude Include="src\game\systems\DamageSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\events\KeyPressedEvent.h">
+    <ClInclude Include="src\game\events\KeyPressedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\KeyboardControlSystem.h">
+    <ClInclude Include="src\game\systems\KeyboardControlSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\KeyboardControlComponent.h">
+    <ClInclude Include="src\game\components\KeyboardControlComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tags\CameraFollowTag.h">
+    <ClInclude Include="src\game\components\tags\CameraFollowTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\CameraMovementSystem.h">
+    <ClInclude Include="src\game\systems\CameraMovementSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\ProjectileEmitterComponent.h">
+    <ClInclude Include="src\game\components\ProjectileEmitterComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\ProjectileEmitSystem.h">
+    <ClInclude Include="src\game\systems\ProjectileEmitSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\HealthComponent.h">
+    <ClInclude Include="src\game\components\HealthComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\ProjectileComponent.h">
+    <ClInclude Include="src\game\components\ProjectileComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\ProjectileLifecycleSystem.h">
+    <ClInclude Include="src\game\systems\ProjectileLifecycleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tags\PlayerTag.h">
+    <ClInclude Include="src\game\components\tags\PlayerTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tags\ProjectileTag.h">
+    <ClInclude Include="src\game\components\tags\ProjectileTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tags\EnemyTag.h">
+    <ClInclude Include="src\game\components\tags\EnemyTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\TextLabelComponent.h">
+    <ClInclude Include="src\engine\components\TextLabelComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\RenderTextSystem.h">
+    <ClInclude Include="src\engine\systems\RenderTextSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\RenderHealthBarSystem.h">
+    <ClInclude Include="src\game\systems\RenderHealthBarSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\RenderGUISystem.h">
+    <ClInclude Include="src\game\systems\RenderGUISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tags\ObstacleTag.h">
+    <ClInclude Include="src\game\components\tags\ObstacleTag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\events\DestroyEvent.h">
+    <ClInclude Include="src\engine\events\DestroyEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Types.h">
+    <ClInclude Include="src\engine\core\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Component.h">
+    <ClInclude Include="src\engine\core\ecs\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\System.h">
+    <ClInclude Include="src\engine\core\ecs\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\ComponentPool.h">
+    <ClInclude Include="src\engine\core\ecs\ComponentPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\helpers\LevelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\helpers\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

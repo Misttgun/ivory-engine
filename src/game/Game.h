@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "../core/Registry.h"
-#include "../core/ResourceManager.h"
-#include "../events/EventBus.h"
-#include "../helpers/Timer.h"
-#include "../window/Window.h"
+#include "../engine/core/ResourceManager.h"
+#include "../engine/core/ecs/Registry.h"
+#include "../engine/events/EventBus.h"
+#include "../engine/helpers/Timer.h"
+#include "../engine/window/Window.h"
 
 namespace re
 {
