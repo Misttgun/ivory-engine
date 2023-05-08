@@ -1,4 +1,5 @@
 - Add an observer patern in place of eventbus
+- Add a shared context where we can get access to global classes (SDL_Renderer, Camera, RessourcesManager, etc) -> put it in the Registry
 - Add an Input handler like in Unity or Raylib
 - Implement custom allocator for memory management instead of using smart pointers
 - Implement UI framework
