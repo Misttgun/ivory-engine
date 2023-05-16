@@ -1,9 +1,8 @@
 - Add an observer patern in place of eventbus
 - Add a shared context where we can get access to global classes (SDL_Renderer, Camera, RessourcesManager, etc) -> put it in the Registry
-- Add an Input handler like in Unity or Raylib
 - Implement custom allocator for memory management instead of using smart pointers
 - Implement UI framework
 - Take a look at sounds
-- Add a map editor
+- Add a map editor (I will use Tiled)
 - Make a game -> (I was thinking of making a tactical RPG, but I can make an adventure RPG like the Godot adventure tutorial + AI)
 - Look at this articles for SDL2 tutorials -> https://david-delassus.medium.com/list/warmonger-dynasty-devlogs-f64b71f556de

@@ -40,7 +40,6 @@ namespace Ivory
 		std::shared_ptr<EventBus> m_eventBus;
 		std::shared_ptr<Window> m_window;
 
-		bool m_isRunning;
 		bool m_isDebug;
 
 		// Debug variables

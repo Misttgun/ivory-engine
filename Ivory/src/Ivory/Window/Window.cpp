@@ -7,6 +7,7 @@
 #include <SDL_ttf.h>
 
 #include "Ivory/Helpers/Log.h"
+#include "Ivory/Input/Input.h"
 
 namespace Ivory
 {
@@ -57,6 +58,9 @@ namespace Ivory
 		// Setup Platform/Renderer backend
 		ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer);
 		ImGui_ImplSDLRenderer_Init(m_renderer);
+
+		// Init inputs
+		m_input = Input::Instance();
 	}
 
 	void Window::Cleanup() const
@@ -100,6 +104,45 @@ namespace Ivory
 			SDL_SetWindowFullscreen(m_window, 0);
 			SDL_SetWindowSize(m_window, m_width, m_height);
 			SDL_SetWindowPosition(m_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		}
+	}
+
+	void Window::ProcessEvents()
+	{
+		m_input->ClearState();
+
+		SDL_Event sdlEvent{};
+		while (SDL_PollEvent(&sdlEvent))
+		{
+			ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+			ImGuiIO& io = ImGui::GetIO();
+			int32 mouseX, mouseY;
+			const auto buttons = SDL_GetMouseState(&mouseX, &mouseY);
+			io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+			io.MouseDown[0] = buttons && SDL_BUTTON(SDL_BUTTON_LEFT);
+			io.MouseDown[1] = buttons && SDL_BUTTON(SDL_BUTTON_RIGHT);
+			io.MouseDown[2] = buttons && SDL_BUTTON(SDL_BUTTON_MIDDLE);
+
+			if(io.WantCaptureKeyboard || io.WantCaptureMouse)
+				return;
+
+			m_input->ProcessEvents(sdlEvent);
+
+			switch (sdlEvent.type)
+			{
+			case SDL_QUIT:
+				m_shouldClose = true;
+				break;
+			case SDL_KEYDOWN:
+				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
+					m_shouldClose = true;
+				if (sdlEvent.key.keysym.sym == SDLK_F1)
+					ToggleFullscreen();
+				//m_eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

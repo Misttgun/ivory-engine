@@ -11,6 +11,7 @@
 #include "Ivory/ECS/Systems/RenderSystem.h"
 #include "Ivory/ECS/Systems/RenderTextSystem.h"
 #include "Ivory/Helpers/Log.h"
+#include "Ivory/Input/Input.h"
 
 #include "Systems/CameraMovementSystem.h"
 #include "Systems/DamageSystem.h"
@@ -27,7 +28,7 @@ namespace Ivory
 	int32 Level::m_mapWidth = 0;
 	int32 Level::m_mapHeight = 0;
 
-	Game::Game() : m_camera{}, m_isRunning(false), m_isDebug(false), m_previousFrameTime(0), m_accumulator(0)
+	Game::Game() : m_camera{}, m_isDebug(false), m_previousFrameTime(0), m_accumulator(0)
 	{
 		Ivory::Log::Init();
 
@@ -71,34 +72,11 @@ namespace Ivory
 
 	void Game::ProcessInputs()
 	{
-		SDL_Event sdlEvent{};
-		while (SDL_PollEvent(&sdlEvent))
-		{
-			ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
-			ImGuiIO& io = ImGui::GetIO();
-			int32 mouseX, mouseY;
-			const auto buttons = SDL_GetMouseState(&mouseX, &mouseY);
-			io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-			io.MouseDown[0] = buttons && SDL_BUTTON(SDL_BUTTON_LEFT);
-			io.MouseDown[1] = buttons && SDL_BUTTON(SDL_BUTTON_RIGHT);
+		m_window->ProcessEvents();
 
-			switch (sdlEvent.type)
-			{
-			case SDL_QUIT:
-				m_isRunning = false;
-				break;
-			case SDL_KEYDOWN:
-				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
-					m_isRunning = false;
-				if (sdlEvent.key.keysym.sym == SDLK_F2)
-					m_isDebug = !m_isDebug;
-				if (sdlEvent.key.keysym.sym == SDLK_F1)
-					m_window->ToggleFullscreen();
-				m_eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
-				break;
-			default:
-				break;
-			}
+		if(Input::IsKeyDown(KeyCode::F2))
+		{
+			m_isDebug = !m_isDebug;
 		}
 	}
 
@@ -184,8 +162,6 @@ namespace Ivory
 		m_camera.y = 0;
 		m_camera.w = Window::m_width;
 		m_camera.h = Window::m_height;
-
-		m_isRunning = true;
 	}
 
 	void Game::Run()
@@ -197,7 +173,7 @@ namespace Ivory
 		m_fpsTimer.Start();
 		m_updateTimer.Start();
 
-		while (m_isRunning)
+		while (m_window->ShouldClose() == false)
 		{
 			ProcessInputs();
 			Update();

@@ -9,6 +9,8 @@
 
 namespace Ivory
 {
+	class Input;
+
 	class Window
 	{
 	public:
@@ -19,9 +21,11 @@ namespace Ivory
 		void EndDraw() const;
 
 		[[nodiscard]] bool IsFullscreen() const { return m_isFullscreen; }
+		[[nodiscard]] bool ShouldClose() const { return m_shouldClose; }
 		[[nodiscard]] SDL_Renderer* Renderer() const { return m_renderer; }
 
 		void ToggleFullscreen();
+		void ProcessEvents();
 
 	public:
 		static int32 m_width;
@@ -31,9 +35,13 @@ namespace Ivory
 		SDL_Window* m_window = nullptr;
 		SDL_Renderer* m_renderer = nullptr;
 
+		Input* m_input = nullptr;
+
 		std::string m_title;
 
 		bool m_isFullscreen = false;
+		bool m_shouldClose = false;
+
 		int32 m_windowedWidth = 0;
 		int32 m_windowedHeight = 0;
 	};
