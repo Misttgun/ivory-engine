@@ -5,4 +5,5 @@
 - Take a look at sounds
 - Add a map editor (I will use Tiled)
 - Make a game -> (I was thinking of making a tactical RPG, but I can make an adventure RPG like the Godot adventure tutorial + AI)
-- Look at this articles for SDL2 tutorials -> https://david-delassus.medium.com/list/warmonger-dynasty-devlogs-f64b71f556de
+- Improve debug tools (Framerate counter is bugged)
+- Look at this articles for SDL2 tutorials -> https://thenumb.at/cpp-course/index.html#sdl

@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer.h>
 
 #include "Helpers/LevelLoader.h"
@@ -84,23 +83,28 @@ namespace Ivory
 	{
 		constexpr float deltaTime = DELTA_TIME_S;
 
-		const auto currentFrameTime = SDL_GetTicks64();
-		auto deltaMs = currentFrameTime - m_previousFrameTime;
+		//const auto currentFrameTime = SDL_GetTicks64();
+		//auto deltaMs = currentFrameTime - m_previousFrameTime;
 
-		// Clamp deltaMS so we don't have weird behaviour when we hit a break point
-		if(deltaMs > static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS))
-			deltaMs = static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS);
+		//// Clamp deltaMS so we don't have weird behaviour when we hit a break point
+		//if(deltaMs > static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS))
+		//	deltaMs = static_cast<uint64>(FUZZY_TIME_PER_FRAME_MS);
 
-		m_previousFrameTime = currentFrameTime;
+		//m_previousFrameTime = currentFrameTime;
 
-		m_accumulator += static_cast<float>(deltaMs);
+		//m_accumulator += static_cast<float>(deltaMs);
 
-		if (m_accumulator <= FUZZY_TIME_PER_FRAME_MS)
-			return;
+		//if (m_accumulator <= FUZZY_TIME_PER_FRAME_MS)
+		//	return;
 
-		m_accumulator -= TIME_PER_FRAME_MS;
-		if (m_accumulator < 0)
-			m_accumulator = 0;
+		//m_accumulator -= TIME_PER_FRAME_MS;
+		//if (m_accumulator < 0)
+		//	m_accumulator = 0;
+
+		m_gameTimer.Stop();
+		const auto elapsedMS = m_gameTimer.ElapsedMilliseconds();
+		const auto toto = static_cast<uint32>(glm::floor(TIME_PER_FRAME_MS - elapsedMS));
+		SDL_Delay(toto);
 
 		m_eventBus->Reset();
 
@@ -124,7 +128,7 @@ namespace Ivory
 
 		if (m_updateTimer.ElapsedSeconds() > 1)
 		{
-			m_fps = "FPS: " + std::to_string(static_cast<uint64>(static_cast<double>(m_totalFrames) / m_fpsTimer.ElapsedSeconds()));
+			m_fps = "FPS: " + std::to_string(static_cast<uint32>(static_cast<float>(m_totalFrames) / m_fpsTimer.ElapsedSeconds()));
 			auto& comp = m_registry->GetComponent<TextLabelComponent>(m_fpsCounter);
 			comp.m_text = m_fps;
 
@@ -132,7 +136,7 @@ namespace Ivory
 		}
 	}
 
-	void Game::Render() const
+	void Game::Render()
 	{
 		m_window->BeginDraw();
 
@@ -150,6 +154,8 @@ namespace Ivory
 			ImGui::Render();
 			ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 		}
+
+		m_gameTimer.Start();
 
 		m_window->EndDraw();
 	}
@@ -171,6 +177,7 @@ namespace Ivory
 		m_previousFrameTime = SDL_GetTicks64();
 
 		m_fpsTimer.Start();
+		m_gameTimer.Start();
 		m_updateTimer.Start();
 
 		while (m_window->ShouldClose() == false)

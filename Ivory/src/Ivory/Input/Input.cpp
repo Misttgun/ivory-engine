@@ -105,13 +105,9 @@ namespace Ivory
 				this->m_keyboard = SDL_GetKeyboardState(nullptr);
 
 				const int32 index = event.key.keysym.scancode;
-				const int32 indexSym = event.key.keysym.sym;
 
 				if(event.key.repeat == 0)
-				{
-					IV_CORE_INFO(indexSym);
 					this->m_keyDown[index] = true;
-				}
 			}
 			break;
 

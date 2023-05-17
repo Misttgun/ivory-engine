@@ -1,6 +1,5 @@
 #pragma once
-
-#include <chrono>
+#include "Ivory/Types.h"
 
 namespace Ivory
 {
@@ -9,12 +8,12 @@ namespace Ivory
 	public:
 		void Start();
 		void Stop();
-		[[nodiscard]] double ElapsedMilliseconds() const;
-		[[nodiscard]] double ElapsedSeconds() const;
+		[[nodiscard]] float ElapsedMilliseconds() const;
+		[[nodiscard]] float ElapsedSeconds() const;
 
 	private:
-		std::chrono::time_point<std::chrono::system_clock> m_startTime;
-		std::chrono::time_point<std::chrono::system_clock> m_endTime;
+		uint64 m_start = 0;
+		uint64 m_end = 0;
 		bool m_running = false;
 	};
 }

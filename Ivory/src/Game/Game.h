@@ -30,7 +30,7 @@ namespace Ivory
 		void Setup() const;
 		void ProcessInputs();
 		void Update();
-		void Render() const;
+		void Render();
 
 	private:
 		SDL_Rect m_camera;
@@ -44,9 +44,10 @@ namespace Ivory
 
 		// Debug variables
 		std::string m_fps;
-		uint64 m_totalFrames = 0;
+		uint32 m_totalFrames = 0;
 		mutable Entity m_fpsCounter{};
 		Timer m_fpsTimer;
+		Timer m_gameTimer;
 		Timer m_updateTimer;
 
 		uint64 m_previousFrameTime;
