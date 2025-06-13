@@ -1,7 +1,16 @@
-# Readme
-**This a devlog/documentation of the game engine so I can jump back into it when I take a break.**
+# Generate Projects
 
-### Resource Management
+Visual Studio 2022 users should run
 
-For resource management I created a the **ResourceManager** class that takes care of loading different resources that I might need in the game.  
-I can use this class to load ***Textures, Font, etc.***
+    GenerateProjects.bat
+	
+This will generate a Visual Studio project.
+
+# Features
+This is a simple 2D C++ game engine using SDL2.
+- Small and simple ECS
+- Simple event system
+
+## Inputs
+- **WASD** to control the Helicopter
+- Press **SPACE** to shoot
